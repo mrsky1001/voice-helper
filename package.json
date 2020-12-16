@@ -4,7 +4,7 @@
   "description": "Voice Helper for sites on TypeScript",
   "main": "dist/index.js",
   "scripts": {
-    "compile": "parcel build src/index.ts --public-url ./",
+    "compile": "tsc --build tsconfig.json",
     "prepublish": "npm run compile"
   },
   "repository": {
@@ -35,10 +35,11 @@
     ]
   },
   "dependencies": {
-    "tslib": "^1.10.0",
-    "typescript": "^3.6.3",
+    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
     "node-sass": "^4.14.1",
-    "sass-loader": "^10.0.1"
+    "sass-loader": "^10.0.1",
+    "tslib": "^1.10.0",
+    "typescript": "^3.6.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
