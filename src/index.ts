@@ -1,8 +1,9 @@
-import VoiceClass from "./voiceClass";
+import ConsoleDriver from "./consoleDriver";
 
 const voiceHelper = (e:string) => {
-    console.log(e)
-    console.log(VoiceClass)
+    console.log("voiceHelper")
+    const consoleDriver = new ConsoleDriver()
+    consoleDriver.start()
 }
 
 export default voiceHelper
