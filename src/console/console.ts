@@ -1,10 +1,11 @@
 import "./console.scss"
-import jQuery from "jquery";
+import $ from '../common/import-jquery'
 
 class Console {
-    // private _consoleElemDom
+    private _consoleElemDom
 
     constructor() {
+        this._consoleElemDom = $(`<div id='console-driver'></div>`)
     }
 
     /**
@@ -16,11 +17,11 @@ class Console {
      */
 
     show() {
-        jQuery(($) =>{
-            $("body")
-                .add(`<div id='#console-driver'> Hello world</div>`)
-                .addClass("console-driver")
-        })
+
+        $("body")
+            .append(this._consoleElemDom)
+            .addClass("console-driver")
+
     }
 }
 
