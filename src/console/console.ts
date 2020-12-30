@@ -1,11 +1,22 @@
 import "./console.scss"
-import $ from '../common/import-jquery'
+import $ from "../common/import-jquery"
 
 class Console {
-    private _consoleElemDom
+    private readonly _consoleElemDom
 
     constructor() {
-        this._consoleElemDom = $(`<div id='console-driver'></div>`)
+        this._consoleElemDom = $(`
+            <div id="console-driver">
+                <div id="text-container">
+                    <p id="text-line-0">Example text</p>
+                </div>
+                <div id="input-command">
+                    <input onchange="" value="" placeholder="Команда"/>
+                </div>            
+            </div>
+        `)
+
+        $("body").append(this._consoleElemDom)
     }
 
     /**
@@ -17,11 +28,7 @@ class Console {
      */
 
     show() {
-
-        $("body")
-            .append(this._consoleElemDom)
-            .addClass("console-driver")
-
+        // this._consoleElemDom.css("display", "inline-block");
     }
 }
 
