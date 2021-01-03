@@ -1,5 +1,6 @@
 import "./console.scss"
 import $ from "../common/import-jquery"
+import {Strings} from "../constants/strings";
 
 class Console {
     private readonly _consoleElemDom
@@ -7,15 +8,18 @@ class Console {
     constructor() {
         this._consoleElemDom = $(`
             <div id="console-driver">
+                <div id="title-container">
+                    <p id="title-text">${Strings.CONSOLE_TITLE}</p>
+                    <button id="title-close-button">X</button>
+                </div>
                 <div id="text-container">
-                    <p id="text-line-0">Example text</p>
+                    <!--<p id="text-line-0"></p>-->
                 </div>
                 <div id="input-command">
-                    <input onchange="" value="" placeholder="Команда"/>
+                    <textarea onchange="" placeholder="Команда"></textarea>
                 </div>            
             </div>
         `)
-
         $("body").append(this._consoleElemDom)
     }
 
