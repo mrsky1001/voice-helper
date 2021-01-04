@@ -9,12 +9,29 @@ class Console {
         this._consoleElemDom = $(`
             <div id="console-driver">
                 <div id="title-container">
-                    <p id="title-text">${Strings.CONSOLE_TITLE}</p>
+                    <span id="title-text">${Strings.CONSOLE_TITLE}</span>
                     <button id="title-close-button">X</button>
                 </div>
                 <div id="text-container">
-                    <!--<p id="text-line-0"></p>-->
-                </div>
+                    <div class="text-line-command ">
+                        <span class="command-message"> Message 1</span>
+                    </div>
+                  <div class="text-line-command ">
+                        <span class="command-message"> Message 1</span>
+                    </div>
+                     <div class="text-line-bot">
+                        <span class="bot-message"> Message 2</span>
+                    </div>
+                     <div class="text-line-command ">
+                        <span class="command-message"> Message 1</span>
+                    </div>
+                    <div class="text-line-bot">
+                        <span class="bot-message"> Message 2</span>
+                    </div>
+                      <div class="text-line-command ">
+                        <span class="command-message"> Message 1</span>
+                    </div>
+                     </div>
                 <div id="input-command">
                     <textarea onchange="" placeholder="Команда"></textarea>
                 </div>            
