@@ -27,6 +27,8 @@ $border: solid 1px $second_color;
   background: inherit;
 
   #title-container {
+    height: 1.4rem;
+
     #title-text {
       display: inline-block;
       font-weight: bold;
@@ -48,28 +50,56 @@ $border: solid 1px $second_color;
   }
 
 
-  #text-container {
+  #message-container {
     height: 65%;
     display: grid;
+    overflow: hidden;
+    margin-bottom: .5rem;
+    padding: .5rem;
+    background: linear-gradient(0, #ffffff 90%, #d8d8d8 120%);
+    border-radius: inherit;
 
-    .text-line-command{
-      text-align: right;
+    &:hover {
+      overflow: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      -moz-overflow-scrolling: touch;
+      -ms-overflow-scrolling: touch;
+      -o-overflow-scrolling: touch;
+      overflow-scrolling: touch;
     }
 
-    .text-line-bot, .text-line-command {
-      width: 100%;
-      padding: 0.5rem;
+    &::-webkit-scrollbar {
+      -webkit-appearance: none;
+      width: 7px;
+    }
 
-      .command-message {
+    &::-webkit-scrollbar-thumb {
+      border-radius: 2px;
+      background-color: rgba(0, 0, 0, 0.5);
+      -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+    }
+
+    .command-message-line {
+      text-align: right;
+
+      .message {
         background-color: gainsboro;
         @include message;
       }
+    }
 
-      .bot-message {
+    .bot-message-line {
+      .message {
         background-color: cornflowerblue;
         color: white;
         @include message;
       }
+    }
+
+    .bot-message-line, .command-message-line {
+      width: 100%;
+      padding: 0.5rem;
     }
   }
 

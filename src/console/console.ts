@@ -4,6 +4,7 @@ import {Strings} from "../constants/strings";
 
 class Console {
     private readonly _consoleElemDom
+    private readonly _messageContainer
 
     constructor() {
         this._consoleElemDom = $(`
@@ -12,23 +13,23 @@ class Console {
                     <span id="title-text">${Strings.CONSOLE_TITLE}</span>
                     <button id="title-close-button">X</button>
                 </div>
-                <div id="text-container">
-                    <div class="text-line-command ">
+                <div id="message-container">
+                    <div class="command-message-line ">
                         <span class="command-message"> Message 1</span>
                     </div>
-                  <div class="text-line-command ">
+                  <div class="command-message-line ">
                         <span class="command-message"> Message 1</span>
                     </div>
-                     <div class="text-line-bot">
+                     <div class="bot-message-line">
                         <span class="bot-message"> Message 2</span>
                     </div>
-                     <div class="text-line-command ">
+                     <div class="command-message-line ">
                         <span class="command-message"> Message 1</span>
                     </div>
-                    <div class="text-line-bot">
+                    <div class="bot-message-line">
                         <span class="bot-message"> Message 2</span>
                     </div>
-                      <div class="text-line-command ">
+                      <div class="command-message-line ">
                         <span class="command-message"> Message 1</span>
                     </div>
                      </div>
@@ -37,6 +38,9 @@ class Console {
                 </div>            
             </div>
         `)
+
+        this._messageContainer = $('#message-container')
+
         $("body").append(this._consoleElemDom)
     }
 
@@ -44,9 +48,28 @@ class Console {
      * The private methods
      */
 
+    updateScroll() {
+        this._messageContainer.scrollTop(this._messageContainer.innerHeight());
+    }
+
     /**
      * The global methods
      */
+    addBotMessage(message) {
+        this._messageContainer
+            .add(`<div class="bot-message-line">
+                    <span class="message">${message}</span>
+                  </div>`)
+        this.updateScroll()
+    }
+
+    addCommandMessage(message) {
+        this._messageContainer
+            .add(`<div class="command-message-line">
+                    <span class="message">${message}</span>
+                  </div>`)
+        this.updateScroll()
+    }
 
     show() {
         // this._consoleElemDom.css("display", "inline-block");
