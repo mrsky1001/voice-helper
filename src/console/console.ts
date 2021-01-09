@@ -5,8 +5,10 @@ import {Strings} from "../constants/strings";
 class Console {
     private readonly _consoleElemDom
     private readonly _messageContainer
+    private readonly _input
 
-    constructor() {
+    constructor(commandCallback) {
+
         this._consoleElemDom = $(`
             <div id="console-driver">
                 <div id="title-container">
@@ -14,30 +16,18 @@ class Console {
                     <button id="title-close-button">X</button>
                 </div>
                 <div id="message-container">
-                    <div class="command-message-line ">
-                        <span class="command-message"> Message 1</span>
-                    </div>
-                  <div class="command-message-line ">
-                        <span class="command-message"> Message 1</span>
-                    </div>
-                     <div class="bot-message-line">
-                        <span class="bot-message"> Message 2</span>
-                    </div>
-                     <div class="command-message-line ">
-                        <span class="command-message"> Message 1</span>
-                    </div>
-                    <div class="bot-message-line">
-                        <span class="bot-message"> Message 2</span>
-                    </div>
-                      <div class="command-message-line ">
-                        <span class="command-message"> Message 1</span>
-                    </div>
-                     </div>
+                </div>
                 <div id="input-command">
-                    <textarea onchange="" placeholder="Команда"></textarea>
+                   <textarea id="comm"  content="12" placeholder="Введите команду..." ></textarea>
                 </div>            
             </div>
         `)
+        // this._input.on('change', commandCallback)
+        // this._input.on('focus keydown keyup', (e) => {
+        //     console.log(e)
+        // })
+        //
+        $("#comm").on('change focus keydown keyup', commandCallback)
 
         this._messageContainer = $('#message-container')
 
@@ -47,6 +37,12 @@ class Console {
     /**
      * The private methods
      */
+    addMessage(className, message) {
+        this._messageContainer
+            .add(`<div class="${className}">
+                    <span class="message">${message}</span>
+                  </div>`)
+    }
 
     updateScroll() {
         this._messageContainer.scrollTop(this._messageContainer.innerHeight());
@@ -55,21 +51,7 @@ class Console {
     /**
      * The global methods
      */
-    addBotMessage(message) {
-        this._messageContainer
-            .add(`<div class="bot-message-line">
-                    <span class="message">${message}</span>
-                  </div>`)
-        this.updateScroll()
-    }
 
-    addCommandMessage(message) {
-        this._messageContainer
-            .add(`<div class="command-message-line">
-                    <span class="message">${message}</span>
-                  </div>`)
-        this.updateScroll()
-    }
 
     show() {
         // this._consoleElemDom.css("display", "inline-block");

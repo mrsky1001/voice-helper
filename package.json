@@ -4,6 +4,7 @@
   "description": "Voice Helper for sites on TypeScript",
   "main": "dist/index.js",
   "scripts": {
+    "serve": "parcel serve index.html",
     "compile": "parcel build src/index.ts",
     "prepublish": "npm run compile"
   },
