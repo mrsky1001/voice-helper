@@ -1,0 +1,13 @@
+{
+  "commands":[{
+    "id": "commands",
+    "text": "Команды",
+    "functionName": "showCommands",
+    "functionFile": "./commandFunctions.ts"
+  },{
+    "id": "reloadPage",
+    "text": "Перезагрузить сайт",
+    "functionName": "reload",
+    "functionFile": "./commandFunctions.ts"
+  }]
+}

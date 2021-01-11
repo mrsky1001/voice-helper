@@ -1,42 +1,57 @@
 import "./console.scss"
 import $ from "../common/import-jquery"
-import {Strings} from "../constants/strings";
+import {strings} from "../constants/strings";
 
 class Console {
     private readonly _consoleElemDom
     private readonly _messageContainer
-    private readonly _input
+    private readonly _parent
 
-    constructor(commandCallback) {
+    private readonly CONSOLE_ID = "console-driver"
+    private readonly MESSAGE_CONTAINER_ID = "message-container"
+    private readonly COMMAND_INPUT = "command-textarea"
 
+    constructor(parent) {
         this._consoleElemDom = $(`
-            <div id="console-driver">
+            <div id="${this.CONSOLE_ID}">
                 <div id="title-container">
-                    <span id="title-text">${Strings.CONSOLE_TITLE}</span>
+                    <span id="title-text">${strings.CONSOLE_TITLE}</span>
                     <button id="title-close-button">X</button>
                 </div>
-                <div id="message-container">
-                </div>
+                <div id="${this.MESSAGE_CONTAINER_ID}"></div>
                 <div id="input-command">
-                   <textarea id="comm"  content="12" placeholder="Введите команду..." ></textarea>
+                   <textarea id="${this.COMMAND_INPUT}" placeholder="Введите команду..." ></textarea>
                 </div>            
             </div>
         `)
-        // this._input.on('change', commandCallback)
-        // this._input.on('focus keydown keyup', (e) => {
-        //     console.log(e)
-        // })
-        //
-        $("#comm").on('change focus keydown keyup', commandCallback)
 
+        this._parent = parent
         this._messageContainer = $('#message-container')
-
-        $("body").append(this._consoleElemDom)
     }
 
     /**
      * The private methods
      */
+    private appendConsole() {
+        const body = $("body")
+
+        if (!body.is("#" + this.CONSOLE_ID))
+            body.append(this._consoleElemDom)
+
+    }
+
+    private appendEventHandlers() {
+        $("#" + this.COMMAND_INPUT).on('change focus keydown keyup',
+            (e) => this._parent.commandCallback(e.target.value))
+    }
+
+    /**
+     * The global methods
+     */
+    updateScroll() {
+        this._messageContainer.scrollTop(this._messageContainer.innerHeight());
+    }
+
     addMessage(className, message) {
         this._messageContainer
             .add(`<div class="${className}">
@@ -44,17 +59,9 @@ class Console {
                   </div>`)
     }
 
-    updateScroll() {
-        this._messageContainer.scrollTop(this._messageContainer.innerHeight());
-    }
-
-    /**
-     * The global methods
-     */
-
-
     show() {
-        // this._consoleElemDom.css("display", "inline-block");
+        this.appendConsole()
+        this.appendEventHandlers()
     }
 }
 

@@ -1,8 +1,11 @@
-import ConsoleDriver from "./consoleDriver";
+import ConsoleDriver from "./console/consoleDriver";
+import CommandManager from "./command/commandManager";
 
-const voiceHelper = (e:string) => {
-    console.log("voiceHelper")
-    const consoleDriver = new ConsoleDriver()
-    consoleDriver.start()
+const voiceHelper = (listCommands) => {
+    console.log(listCommands)
+    const commandManager = new CommandManager(listCommands)
+    const consoleDriver = new ConsoleDriver(commandManager)
+
+    consoleDriver.showConsole()
 }
 export default voiceHelper

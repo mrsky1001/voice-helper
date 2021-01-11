@@ -1,3 +1,5 @@
-import VoiceHelper from "./src/index";
+import VoiceHelper from "./src/index"
+import {commands} from "./commands.json"
+console.log(commands)
 
-VoiceHelper("2")
+VoiceHelper(commands)
