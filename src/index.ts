@@ -1,9 +1,9 @@
 import ConsoleDriver from "./console/consoleDriver";
 import CommandManager from "./command/commandManager";
+import coreFunctions from "./command/coreFunctions";
 
 const voiceHelper = (listCommands) => {
-    console.log(listCommands)
-    const commandManager = new CommandManager(listCommands)
+    const commandManager = new CommandManager(listCommands, coreFunctions)
     const consoleDriver = new ConsoleDriver(commandManager)
 
     consoleDriver.showConsole()

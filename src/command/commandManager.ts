@@ -1,32 +1,74 @@
 import $ from "../common/import-jquery"
-import {strings} from "../constants/strings";
-import Command from "./command";
+import {strings} from "../constants/strings"
+import Command from "./command"
 
 class CommandManager {
-    private readonly _commands
+    private readonly _functions: object
+    private readonly _commands: Array<Command>
+    private readonly _pullCommands: Array<Command>
 
-    constructor(list) {
+    constructor({commands, coreCommands, functions, coreFunctions}) {
+        this._functions = {}
         this._commands = []
-        this.parseCommands(list)
+        this._pullCommands = []
+
+        this.parseCommands(commands, coreCommands)
+        this.parseFunctions(functions, coreFunctions)
     }
 
-    private parseCommands(list) {
+    private parseCommands(commands, coreCommands) {
         try {
-            console.log(list)
-            list.forEach(elem => {
-                this._commands.push(new Command({
-                    id: elem.id,
-                    text: elem.text,
-                    functionFile: elem.functionFile,
-                    functionName: elem.functionName
-                }))
+            const isExist = (command: Command) => {
+                return this._commands.find(elem => {
+                    return elem.id === command.id
+                }) !== undefined
+            }
+
+            const add = (command: Command) => {
+                if (isExist(command))
+                    this._commands.push(command)
+            }
+
+            coreCommands.forEach(elem => {
+                add(new Command(elem))
             })
-            console.log(this._commands)
+
+            commands.forEach(elem => {
+                add(new Command(elem))
+            })
         } catch (e) {
             console.error("The commands file not parsed!")
             console.error(e)
         }
     }
+
+    private parseFunctions(functions: object, coreFunctions: object) {
+        try {
+            const isExist = (newKey) => {
+                return Object.keys(this._functions).find(key => {
+                    return key === newKey
+                }) !== undefined
+            }
+
+            const add = (newKey, functions) => {
+                if (isExist(newKey))
+                    this._functions[newKey] = functions[newKey]
+            }
+
+            Object.keys(coreFunctions).forEach(newKey => {
+                add(newKey, coreFunctions)
+            })
+
+            Object.keys(functions).forEach(newKey => {
+                add(newKey, functions)
+            })
+        } catch
+            (e) {
+            console.error("The functions file not parsed!")
+            console.error(e)
+        }
+    }
+
 
     private getScript(filename) {
         return $.getScript(filename, () => {
@@ -34,20 +76,30 @@ class CommandManager {
         });
     }
 
-   public parseTextToCommand(text) {
-        this.commands.forEach(command => {
-            console.log("Command: " + text)
-            console.log("CheckedCommand: " + command.text)
+    public
+
+    parseTextToCommand(text) {
+        let commandMax: Command = null
+
+        this._pullCommands.forEach(command => {
             const percent = CommandManager.similarText(command.text, text)
-            console.log("Percent: " + percent)
+
+            if (commandMax && percent > commandMax.matchPercent) {
+                commandMax = command
+            }
+
+            console.log("Percent: " + percent + " | Command: " + text + " / CheckedCommand: " + command.text + "")
         })
+
+        this._pullCommands.push(new Command(commandMax))
+        console.log(this._pullCommands)
     }
 
     /**
      * getters and setters
      */
-    get commands() {
-        return this._commands
+    get listCommands() {
+        return this._listCommands
     }
 
     /**
@@ -56,7 +108,9 @@ class CommandManager {
      * @param {object} [costs] Веса операций { [replace], [replaceCase], [insert], [remove] }
      * @return {number} Расстояние Левенштейна
      */
-    private static levenshtein(s1, s2, costs) {
+    private static
+
+    levenshtein(s1, s2, costs) {
         let i, j, l1, l2, flip, ch, chl, ii, ii2, cost, cutHalf;
         l1 = s1.length;
         l2 = s2.length;
@@ -95,7 +149,9 @@ class CommandManager {
         return buf[l2 + cutHalf - flip];
     }
 
-    private static tanimoto(s1, s2) {
+    private static
+
+    tanimoto(s1, s2) {
         s1 = Array.from(s1);
         s2 = Array.from(s2);
 
@@ -113,7 +169,9 @@ class CommandManager {
         return c / (a + b - c)
     }
 
-    private static similarText(first, second, percent = true) {
+    private static
+
+    similarText(first, second, percent = true) {
         if (first === null || second === null || typeof first === 'undefined' || typeof second === 'undefined') {
             return 0;
         }

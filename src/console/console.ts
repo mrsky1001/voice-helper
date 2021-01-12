@@ -58,7 +58,7 @@ class Console {
 
         commandInput.on('change focus keydown keyup',
             (e) => {
-                if (e.keyCode == 13) {
+                if (e.key === 'Enter') {
                     this.sendCommand(e.target.value)
                 }
             }
@@ -69,8 +69,10 @@ class Console {
      * The global methods
      */
     clearSendForm() {
-        $(this.COMMAND_INPUT).val("1")
-        $(this.COMMAND_INPUT).trigger('blur')
+        const commandInput = $("#" + this.COMMAND_INPUT)
+
+        commandInput.val("")
+        commandInput.trigger('blur')
     }
 
     updateScroll() {

@@ -1,10 +1,13 @@
 class Command {
+
     private readonly _id
     private readonly _text
     private readonly _functionFile
     private readonly _functionName
 
     private _isRun
+    private _userText
+    private _matchPercent
 
     constructor({id, text, functionFile, functionName}) {
         this._id = id
@@ -12,9 +15,10 @@ class Command {
         this._functionFile = functionFile
         this._functionName = functionName
 
+        this._matchPercent = 0
+        this._userText = ""
         this._isRun = false
     }
-
 
     /**
      * The global methods
@@ -26,6 +30,22 @@ class Command {
     /**
      * getters and setters
      */
+    get userText() {
+        return this._userText;
+    }
+
+    set userText(value) {
+        this._userText = value;
+    }
+
+    get matchPercent() {
+        return this._matchPercent;
+    }
+
+    set matchPercent(value) {
+        this._matchPercent = value;
+    }
+
     get id() {
         return this._id;
     }
