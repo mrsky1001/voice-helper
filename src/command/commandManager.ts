@@ -12,6 +12,7 @@ class CommandManager {
 
     private parseCommands(list) {
         try {
+            console.log(list)
             list.forEach(elem => {
                 this._commands.push(new Command({
                     id: elem.id,
@@ -20,6 +21,7 @@ class CommandManager {
                     functionName: elem.functionName
                 }))
             })
+            console.log(this._commands)
         } catch (e) {
             console.error("The commands file not parsed!")
             console.error(e)

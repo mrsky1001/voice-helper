@@ -26,6 +26,22 @@ class Command {
     /**
      * getters and setters
      */
+    get id() {
+        return this._id;
+    }
+
+    get text() {
+        return this._text;
+    }
+
+    get functionFile() {
+        return this._functionFile;
+    }
+
+    get functionName() {
+        return this._functionName;
+    }
+
     get isRun() {
         return this._isRun
     }

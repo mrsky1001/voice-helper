@@ -113,7 +113,7 @@ $border: solid 1px $second_color;
     }
   }
 
-  #input-command {
+  #form-command {
     width: 100%;
 
     textarea {
@@ -123,6 +123,14 @@ $border: solid 1px $second_color;
       border-radius: $border_radius;
       padding: 0.5rem;
       outline-color: $main_color;
+    }
+
+    button {
+      border: $border;
+      border-radius: $border_radius;
+      margin-right: 3%;
+      height: 1.5rem;
+      float: right;
     }
   }
 }

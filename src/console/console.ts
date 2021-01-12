@@ -10,6 +10,7 @@ class Console {
     private readonly CONSOLE_ID = "console-driver"
     private readonly MESSAGE_CONTAINER_ID = "message-container"
     private readonly COMMAND_INPUT = "command-textarea"
+    private readonly SEND_COMMAND = "send-command"
 
     constructor(parent) {
         this._consoleElemDom = $(`
@@ -19,8 +20,9 @@ class Console {
                     <button id="title-close-button">X</button>
                 </div>
                 <div id="${this.MESSAGE_CONTAINER_ID}"></div>
-                <div id="input-command">
+                <div id="form-command">
                    <textarea id="${this.COMMAND_INPUT}" placeholder="Введите команду..." ></textarea>
+                   <button id="${this.SEND_COMMAND}" >Оправить</button>
                 </div>            
             </div>
         `)
@@ -40,14 +42,37 @@ class Console {
 
     }
 
+    private sendCommand (value){
+        this.clearSendForm()
+        return this._parent.commandCallback(value)
+    }
+
     private appendEventHandlers() {
-        $("#" + this.COMMAND_INPUT).on('change focus keydown keyup',
-            (e) => this._parent.commandCallback(e.target.value))
+        const commandInput = $("#" + this.COMMAND_INPUT)
+        const sendButton = $("#" + this.SEND_COMMAND)
+
+        sendButton.on('click',
+            (e) =>
+                this.sendCommand(commandInput.val())
+        )
+
+        commandInput.on('change focus keydown keyup',
+            (e) => {
+                if (e.keyCode == 13) {
+                    this.sendCommand(e.target.value)
+                }
+            }
+        )
     }
 
     /**
      * The global methods
      */
+    clearSendForm() {
+        $(this.COMMAND_INPUT).val("1")
+        $(this.COMMAND_INPUT).trigger('blur')
+    }
+
     updateScroll() {
         this._messageContainer.scrollTop(this._messageContainer.innerHeight());
     }
