@@ -1,4 +1,7 @@
-const commandFunctions = {
+export const commandFunctions = {
+    HELLO: () => {
+
+    },
     SHOW_COMMANDS: () => {
         location.reload()
     },
@@ -6,3 +9,5 @@ const commandFunctions = {
         location.reload()
     }
 }
+
+export default commandFunctions

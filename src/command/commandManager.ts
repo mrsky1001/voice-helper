@@ -6,6 +6,7 @@ class CommandManager {
     private readonly _functions: object
     private readonly _commands: Array<Command>
     private readonly _pullCommands: Array<Command>
+    private readonly _ID_EMPTY_COMMAND = "incorrect"
 
     constructor({commands, coreCommands, functions, coreFunctions}) {
         this._functions = {}
@@ -18,14 +19,14 @@ class CommandManager {
 
     private parseCommands(commands, coreCommands) {
         try {
-            const isExist = (command: Command) => {
+            const isNotExist = (command: Command) => {
                 return this._commands.find(elem => {
                     return elem.id === command.id
-                }) !== undefined
+                }) === undefined
             }
 
             const add = (command: Command) => {
-                if (isExist(command))
+                if (isNotExist(command))
                     this._commands.push(command)
             }
 
@@ -42,16 +43,16 @@ class CommandManager {
         }
     }
 
-    private parseFunctions(functions: object, coreFunctions: object) {
+    private parseFunctions(functions, coreFunctions) {
         try {
-            const isExist = (newKey) => {
+            const isNotExist = (newKey) => {
                 return Object.keys(this._functions).find(key => {
                     return key === newKey
-                }) !== undefined
+                }) === undefined
             }
 
             const add = (newKey, functions) => {
-                if (isExist(newKey))
+                if (isNotExist(newKey))
                     this._functions[newKey] = functions[newKey]
             }
 
@@ -69,26 +70,36 @@ class CommandManager {
         }
     }
 
+    run(name: string) {
+        try {
+            const command = this.commands.find(_ => _.id === name)
+            console.log(command)
+            command.func()
 
-    private getScript(filename) {
-        return $.getScript(filename, () => {
-            console.log(strings.FILE_LOADED + filename)
-        });
+        } catch (e) {
+            console.error("Command: " + name)
+            console.error(strings.COMMAND_NOT_EXECUTED)
+            console.error(e)
+        }
     }
 
-    public
-
     parseTextToCommand(text) {
-        let commandMax: Command = null
+        let commandMax: Command = this._commands.find((_) => {
+            return _.id === this._ID_EMPTY_COMMAND
+        })
 
-        this._pullCommands.forEach(command => {
-            const percent = CommandManager.similarText(command.text, text)
+        const checkSimilar = (command) => {
+            const percent = CommandManager.similarText(text, command.text)
 
-            if (commandMax && percent > commandMax.matchPercent) {
+            if (percent > commandMax.matchPercent) {
                 commandMax = command
             }
 
             console.log("Percent: " + percent + " | Command: " + text + " / CheckedCommand: " + command.text + "")
+        }
+
+        this._commands.forEach(command => {
+            checkSimilar(command)
         })
 
         this._pullCommands.push(new Command(commandMax))
@@ -98,80 +109,11 @@ class CommandManager {
     /**
      * getters and setters
      */
-    get listCommands() {
-        return this._listCommands
+    get commands() {
+        return this._commands
     }
 
-    /**
-     * @param {string} s1 Исходная строка
-     * @param {string} s2 Сравниваемая строка
-     * @param {object} [costs] Веса операций { [replace], [replaceCase], [insert], [remove] }
-     * @return {number} Расстояние Левенштейна
-     */
-    private static
-
-    levenshtein(s1, s2, costs) {
-        let i, j, l1, l2, flip, ch, chl, ii, ii2, cost, cutHalf;
-        l1 = s1.length;
-        l2 = s2.length;
-
-        costs = costs || {};
-        let cr = costs.replace || 1;
-        let cri = costs.replaceCase || costs.replace || 1;
-        let ci = costs.insert || 1;
-        let cd = costs.remove || 1;
-
-        cutHalf = flip = Math.max(l1, l2);
-
-        let minCost = Math.min(cd, ci, cr);
-        let minD = Math.max(minCost, (l1 - l2) * cd);
-        let minI = Math.max(minCost, (l2 - l1) * ci);
-        let buf = new Array((cutHalf * 2) - 1);
-
-        for (i = 0; i <= l2; ++i) {
-            buf[i] = i * minD;
-        }
-
-        for (i = 0; i < l1; ++i, flip = cutHalf - flip) {
-            ch = s1[i];
-            chl = ch.toLowerCase();
-
-            buf[flip] = (i + 1) * minI;
-
-            ii = flip;
-            ii2 = cutHalf - flip;
-
-            for (j = 0; j < l2; ++j, ++ii, ++ii2) {
-                cost = (ch === s2[j] ? 0 : (chl === s2[j].toLowerCase()) ? cri : cr);
-                buf[ii + 1] = Math.min(buf[ii2 + 1] + cd, buf[ii] + ci, buf[ii2] + cost);
-            }
-        }
-        return buf[l2 + cutHalf - flip];
-    }
-
-    private static
-
-    tanimoto(s1, s2) {
-        s1 = Array.from(s1);
-        s2 = Array.from(s2);
-
-        let a = s1.length;
-        let b = s2.length;
-        let c = 0;
-
-        for (let sym of s1) {
-            let index = s2.indexOf(sym);
-            if (index > -1) {
-                s2.splice(index, 1);
-                c += 1;
-            }
-        }
-        return c / (a + b - c)
-    }
-
-    private static
-
-    similarText(first, second, percent = true) {
+    private static similarText(first, second, percent = true) {
         if (first === null || second === null || typeof first === 'undefined' || typeof second === 'undefined') {
             return 0;
         }
@@ -220,8 +162,6 @@ class CommandManager {
 
         return sum * 200 / (firstLength + secondLength);
     }
-
-
 }
 
 export default CommandManager

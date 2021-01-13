@@ -1,5 +1,6 @@
 import Console from "./console";
 import CommandManager from "../command/commandManager";
+import {consoleNames} from "./consoleNames";
 
 class ConsoleDriver {
     private _console: Console
@@ -16,8 +17,7 @@ class ConsoleDriver {
      * The private methods
      */
     public commandCallback(text) {
-        console.log(text)
-        console.log( this._commandManager)
+        this.addCommandMessage(text)
         this._commandManager.parseTextToCommand(text)
     }
 
@@ -26,12 +26,12 @@ class ConsoleDriver {
      * The global methods
      */
     addBotMessage(message) {
-        this._console.addMessage("bot-message-line", message)
+        this._console.addMessage(consoleNames.BOT_MESSAGE, message)
         this._console.updateScroll()
     }
 
     addCommandMessage(message) {
-        this._console.addMessage("command-message-line", message)
+        this._console.addMessage(consoleNames.COMMAND_MESSAGE, message)
         this._console.updateScroll()
     }
 

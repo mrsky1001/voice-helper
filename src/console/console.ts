@@ -1,34 +1,31 @@
 import "./console.scss"
 import $ from "../common/import-jquery"
 import {strings} from "../constants/strings";
+import {consoleNames} from "./consoleNames";
 
 class Console {
     private readonly _consoleElemDom
     private readonly _messageContainer
     private readonly _parent
-
-    private readonly CONSOLE_ID = "console-driver"
-    private readonly MESSAGE_CONTAINER_ID = "message-container"
-    private readonly COMMAND_INPUT = "command-textarea"
-    private readonly SEND_COMMAND = "send-command"
+    private readonly _MAX_SCROLL = 999999
 
     constructor(parent) {
         this._consoleElemDom = $(`
-            <div id="${this.CONSOLE_ID}">
+            <div id="${consoleNames.CONSOLE_ID}">
                 <div id="title-container">
                     <span id="title-text">${strings.CONSOLE_TITLE}</span>
                     <button id="title-close-button">X</button>
                 </div>
-                <div id="${this.MESSAGE_CONTAINER_ID}"></div>
+                <div id="${consoleNames.MESSAGE_CONTAINER_ID}"></div>
                 <div id="form-command">
-                   <textarea id="${this.COMMAND_INPUT}" placeholder="Введите команду..." ></textarea>
-                   <button id="${this.SEND_COMMAND}" >Оправить</button>
+                   <textarea id="${consoleNames.COMMAND_INPUT}" placeholder="Введите команду..." ></textarea>
+                   <button id="${consoleNames.SEND_COMMAND}" >Оправить</button>
                 </div>            
             </div>
         `)
 
         this._parent = parent
-        this._messageContainer = $('#message-container')
+
     }
 
     /**
@@ -37,19 +34,19 @@ class Console {
     private appendConsole() {
         const body = $("body")
 
-        if (!body.is("#" + this.CONSOLE_ID))
+        if (!body.is("#" + consoleNames.CONSOLE_ID))
             body.append(this._consoleElemDom)
 
     }
 
-    private sendCommand (value){
+    private sendCommand(value) {
         this.clearSendForm()
         return this._parent.commandCallback(value)
     }
 
     private appendEventHandlers() {
-        const commandInput = $("#" + this.COMMAND_INPUT)
-        const sendButton = $("#" + this.SEND_COMMAND)
+        const commandInput = $("#" + consoleNames.COMMAND_INPUT)
+        const sendButton = $("#" + consoleNames.SEND_COMMAND)
 
         sendButton.on('click',
             (e) =>
@@ -65,23 +62,27 @@ class Console {
         )
     }
 
+    private get messageContainer() {
+        return $('#message-container')
+    }
+
     /**
      * The global methods
      */
     clearSendForm() {
-        const commandInput = $("#" + this.COMMAND_INPUT)
+        const commandInput = $("#" + consoleNames.COMMAND_INPUT)
 
         commandInput.val("")
-        commandInput.trigger('blur')
+        // commandInput.trigger('blur')
     }
 
     updateScroll() {
-        this._messageContainer.scrollTop(this._messageContainer.innerHeight());
+        this.messageContainer.scrollTop(this._MAX_SCROLL);
     }
 
     addMessage(className, message) {
-        this._messageContainer
-            .add(`<div class="${className}">
+        this.messageContainer
+            .append(`<div class="${className}">
                     <span class="message">${message}</span>
                   </div>`)
     }

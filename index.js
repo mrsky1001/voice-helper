@@ -1,5 +1,6 @@
-import VoiceHelper from "./src/index"
+import {startVoiceHelper, addBotMessage} from "./src/index"
 import {commands} from "./commands.json"
-console.log(commands)
+import {commandFunctions} from "./commandFunctions.ts"
 
-VoiceHelper(commands)
+startVoiceHelper(commands, commandFunctions)
+addBotMessage("Здравствуйте! Я голосовой ")

@@ -7,7 +7,6 @@ $border: solid 1px $second_color;
 @mixin message {
   border-radius: $border-radius;
   padding: 0.3rem;
-  color: white;
 }
 
 #console-driver {
@@ -95,6 +94,7 @@ $border: solid 1px $second_color;
 
       .message {
         background-color: gainsboro;
+        color: #464648;
         @include message;
       }
     }
@@ -109,7 +109,7 @@ $border: solid 1px $second_color;
 
     .bot-message-line, .command-message-line {
       width: 100%;
-      padding: 0.5rem;
+      padding: 0.5rem 0 0 0;
     }
   }
 
