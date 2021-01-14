@@ -1,20 +1,19 @@
-import $ from "../common/import-jquery"
 import {strings} from "../constants/strings"
-import Command from "./command"
+import {Command} from "./command"
+import {Settings} from "../settings/settings";
+import {commandTypes} from "../common/commandTypes";
 
 class CommandManager {
-    private readonly _functions: object
     private readonly _commands: Array<Command>
     private readonly _pullCommands: Array<Command>
-    private readonly _ID_EMPTY_COMMAND = "incorrect"
+    private readonly _settings: Settings
 
-    constructor({commands, coreCommands, functions, coreFunctions}) {
-        this._functions = {}
+    constructor(commands, coreCommands, settings) {
         this._commands = []
         this._pullCommands = []
+        this._settings = settings
 
         this.parseCommands(commands, coreCommands)
-        this.parseFunctions(functions, coreFunctions)
     }
 
     private parseCommands(commands, coreCommands) {
@@ -40,42 +39,19 @@ class CommandManager {
         } catch (e) {
             console.error("The commands file not parsed!")
             console.error(e)
+            throw e
         }
     }
 
-    private parseFunctions(functions, coreFunctions) {
-        try {
-            const isNotExist = (newKey) => {
-                return Object.keys(this._functions).find(key => {
-                    return key === newKey
-                }) === undefined
-            }
 
-            const add = (newKey, functions) => {
-                if (isNotExist(newKey))
-                    this._functions[newKey] = functions[newKey]
-            }
-
-            Object.keys(coreFunctions).forEach(newKey => {
-                add(newKey, coreFunctions)
-            })
-
-            Object.keys(functions).forEach(newKey => {
-                add(newKey, functions)
-            })
-        } catch
-            (e) {
-            console.error("The functions file not parsed!")
-            console.error(e)
-        }
-    }
-
+    /**
+     * The global methods
+     */
     run(name: string) {
         try {
             const command = this.commands.find(_ => _.id === name)
             console.log(command)
             command.func()
-
         } catch (e) {
             console.error("Command: " + name)
             console.error(strings.COMMAND_NOT_EXECUTED)
@@ -83,27 +59,49 @@ class CommandManager {
         }
     }
 
+
     parseTextToCommand(text) {
-        let commandMax: Command = this._commands.find((_) => {
-            return _.id === this._ID_EMPTY_COMMAND
-        })
+        try {
+            let resCommand: Command = this._commands.find((_) => {
+                return _.id === this._settings.notFoundCommandId
+            })
 
-        const checkSimilar = (command) => {
-            const percent = CommandManager.similarText(text, command.text)
+            const isValidMessage = text.length >= this._settings.minMessageSize
 
-            if (percent > commandMax.matchPercent) {
-                commandMax = command
+            const pushMessage = (text) => {
+                const checkSimilar = (command) => {
+                    const percent = CommandManager.similarText(text, command.text)
+
+                    if (percent > resCommand.matchPercent && percent > this._settings.minPercentSimilar) {
+                        resCommand = command
+                    }
+
+                    console.log("Percent: " + percent + " | Command: " + text + " / CheckedCommand: " + command.text + "")
+                }
+                console.log(this._commands)
+                this._commands.forEach(command => {
+                    checkSimilar(command)
+                })
+
+                console.log(resCommand)
+                if (resCommand.type !== commandTypes.SYSTEM)
+                    this._pullCommands.push(new Command(resCommand))
+
+                resCommand.func()
+                console.log(this._pullCommands)
+                return true
             }
 
-            console.log("Percent: " + percent + " | Command: " + text + " / CheckedCommand: " + command.text + "")
+            if (isValidMessage)
+                return pushMessage(text)
+            else
+                resCommand.func()
+
+            return false
+        } catch (e) {
+            console.error("Command not parsed!")
+            console.error(e)
         }
-
-        this._commands.forEach(command => {
-            checkSimilar(command)
-        })
-
-        this._pullCommands.push(new Command(commandMax))
-        console.log(this._pullCommands)
     }
 
     /**

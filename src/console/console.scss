@@ -7,6 +7,8 @@ $border: solid 1px $second_color;
 @mixin message {
   border-radius: $border-radius;
   padding: 0.3rem;
+  width: fit-content;
+
 }
 
 #console-driver {
@@ -95,6 +97,8 @@ $border: solid 1px $second_color;
       .message {
         background-color: gainsboro;
         color: #464648;
+        float: right;
+
         @include message;
       }
     }

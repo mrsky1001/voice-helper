@@ -5,7 +5,6 @@ import {consoleNames} from "./consoleNames";
 
 class Console {
     private readonly _consoleElemDom
-    private readonly _messageContainer
     private readonly _parent
     private readonly _MAX_SCROLL = 999999
 
@@ -50,7 +49,7 @@ class Console {
 
         sendButton.on('click',
             (e) =>
-                this.sendCommand(commandInput.val())
+                this.sendCommand(String(commandInput.val()).replace(/[\n\t\r]/g,""))
         )
 
         commandInput.on('change focus keydown keyup',
@@ -63,12 +62,24 @@ class Console {
     }
 
     private get messageContainer() {
-        return $('#message-container')
+        return $('#' + consoleNames.MESSAGE_CONTAINER_ID)
+    }
+
+    private checkMessageRequirements() {
+        $('.command-message-line').each((i, elem) => {
+            const message = $(elem).find('.message')[0]
+            const isEmpty = message.innerText.length === 0
+
+            if (isEmpty)
+                elem.remove()
+        })
     }
 
     /**
      * The global methods
      */
+
+
     clearSendForm() {
         const commandInput = $("#" + consoleNames.COMMAND_INPUT)
 
@@ -80,11 +91,14 @@ class Console {
         this.messageContainer.scrollTop(this._MAX_SCROLL);
     }
 
-    addMessage(className, message) {
-        this.messageContainer
-            .append(`<div class="${className}">
-                    <span class="message">${message}</span>
+    addMessage(className, message = "") {
+        if (message.trim().length > 0)
+            this.messageContainer
+                .append(`<div class="${className}">
+                    <div class="message">${message}</div>
                   </div>`)
+
+        // this.checkMessageRequirements()
     }
 
     show() {

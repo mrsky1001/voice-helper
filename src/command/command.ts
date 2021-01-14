@@ -1,17 +1,27 @@
-class Command {
+import {commandTypes} from "../common/commandTypes";
 
-    private readonly _id
-    private readonly _text
-    private readonly _func
+interface ICommand {
+    id: string
+    text: string
+    type: string
+    func: () => any
+}
+
+class Command implements ICommand {
+    private readonly _id: string
+    private readonly _text: string
+    private readonly _type: string
+    private readonly _func: () => any
 
     private _isRun
     private _isExecuted
     private _userText
     private _matchPercent
 
-    constructor({id, text, func}) {
+    constructor({id, text, type = commandTypes.DEFAULT, func}: ICommand) {
         this._id = id
         this._text = text
+        this._type = type
         this._func = func
 
         this._matchPercent = 0
@@ -30,6 +40,10 @@ class Command {
     /**
      * getters and setters
      */
+    get type() {
+        return this._type;
+    }
+
     get userText() {
         return this._userText;
     }
@@ -76,4 +90,4 @@ class Command {
 
 }
 
-export default Command
+export {Command, ICommand}

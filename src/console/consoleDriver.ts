@@ -3,12 +3,10 @@ import CommandManager from "../command/commandManager";
 import {consoleNames} from "./consoleNames";
 
 class ConsoleDriver {
-    private _console: Console
+    private readonly _console: Console
     private readonly _commandManager: CommandManager
 
     constructor(commandManager) {
-        console.log(commandManager)
-
         this._commandManager = commandManager
         this._console = new Console(this)
     }

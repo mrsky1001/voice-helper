@@ -5,6 +5,12 @@ export const coreFunctions = {
     HELLO: () => {
         addBotMessage(coreMessages.HELLO)
     },
+    SMALL_OR_EMPTY: () => {
+        addBotMessage(coreMessages.SMALL_OR_EMPTY)
+    },
+    NOT_FOUND_COMMAND:() =>{
+        addBotMessage(coreMessages.NOT_FOUND_COMMAND)
+    },
     INCORRECT_COMMAND: () => {
         console.log("Incorrect command!")
     },
