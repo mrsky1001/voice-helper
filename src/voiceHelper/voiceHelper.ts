@@ -5,6 +5,8 @@ import {ICommand} from "../command/command";
 import coreCommands from "../common/coreCommands";
 import strings from "../constants/strings";
 
+console.log(coreCommands)
+
 class VoiceHelper {
 
     private _commandManager: CommandManager
@@ -19,7 +21,7 @@ class VoiceHelper {
                 coreCommands,
                 this._settings
             )
-            this._consoleDriver = new ConsoleDriver(this.commandManager)
+            this._consoleDriver = new ConsoleDriver(this.commandManager, this._settings)
 
             this.consoleDriver.showConsole()
             this.commandManager.run('hello')
@@ -28,6 +30,8 @@ class VoiceHelper {
             console.error(e)
         }
     }
+
+
 
     get settings(): Settings {
         return this._settings;

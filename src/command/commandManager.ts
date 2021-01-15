@@ -31,12 +31,21 @@ class CommandManager {
                     this._commands.push(command)
             }
 
-            coreCommands.forEach(elem => {
+            const prepareCommand = (elem) => {
+                if (typeof elem.text === 'string')
+                    elem.text = [elem.text]
+                else if (elem.text === undefined)
+                    elem.text = []
+
                 add(new Command(elem))
+            }
+
+            coreCommands.forEach(elem => {
+                prepareCommand(elem)
             })
 
             commands.forEach(elem => {
-                add(new Command(elem))
+                prepareCommand(elem)
             })
         } catch (e) {
             console.error("The commands file not parsed!")
@@ -55,7 +64,7 @@ class CommandManager {
 
         this._commands.forEach(command => {
             if (command.type !== commandTypes.SYSTEM) {
-                text += "" + counter + ") \"" + command.text + "\". "
+                text += "" + counter + ") \"" + command.text[0] + "\". "
 
                 if (command.description !== undefined)
                     text += command.description
@@ -92,13 +101,16 @@ class CommandManager {
 
             const pushMessage = (text) => {
                 const checkSimilar = (command) => {
-                    const percent = stringSimilarity.compareTwoStrings(text, command.text)
+                    const percent = Math.max.apply(Math, command.text.map(str => stringSimilarity.compareTwoStrings(text, str)).map(function (o) {
+                        return o
+                    }))
 
                     if (percent > resCommand.matchPercent && percent > this._settings.minPercentSimilar) {
                         resCommand = command
+                        resCommand.matchPercent = percent
                     }
 
-                    console.log("Percent: " + percent + " | Command: \"" + text + "\" / CheckedCommand: \"" + command.text + "\"")
+                    console.log("Percent: " + percent + " | Command: \"" + text + "\" / CheckedCommand: \"" + command.text[0] + "\"")
                 }
 
                 this._commands.forEach(command => {

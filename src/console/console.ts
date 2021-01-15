@@ -118,26 +118,19 @@ class Console {
         return $('#' + consoleNames.MESSAGE_CONTAINER_ID)
     }
 
-    private checkMessageRequirements() {
-        $('.command-message-line').each((i, elem) => {
-            const message = $(elem).find('.message')[0]
-            const isEmpty = message.innerText.length === 0
-
-            if (isEmpty)
-                elem.remove()
-        })
-    }
-
     /**
      * The global methods
      */
+    resize(scale: number) {
+        const commandInput = $("#" + consoleNames.COMMAND_INPUT)
 
+        commandInput.height(commandInput.height() + scale)
+    }
 
     clearSendForm() {
         const commandInput = $("#" + consoleNames.COMMAND_INPUT)
 
         commandInput.val("")
-        // commandInput.trigger('blur')
     }
 
     updateScroll() {
@@ -150,8 +143,6 @@ class Console {
                 .append(`<div class="${className}">
                     <div class="message">${message}</div>
                   </div>`)
-
-        // this.checkMessageRequirements()
     }
 
     show() {

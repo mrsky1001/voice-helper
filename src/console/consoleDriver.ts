@@ -1,14 +1,17 @@
 import Console from "./console";
 import CommandManager from "../command/commandManager";
 import {consoleNames} from "./consoleNames";
+import {Settings} from "../settings/settings";
 
 class ConsoleDriver {
     private readonly _console: Console
     private readonly _commandManager: CommandManager
+    private readonly _settings: Settings
 
-    constructor(commandManager) {
+    constructor(commandManager: CommandManager, settings: Settings) {
         this._commandManager = commandManager
         this._console = new Console(this)
+        this._settings = settings
     }
 
     /**
@@ -23,6 +26,18 @@ class ConsoleDriver {
     /**
      * The global methods
      */
+    increaseConsole() {
+        this._console.resize(this._settings.scaleSize)
+    }
+
+    decreaseConsole() {
+        this._console.resize(-this._settings.scaleSize)
+    }
+
+    resetSizeConsole() {
+        this._console.resize(-this._settings.scaleSize)
+    }
+
     addBotMessage(message) {
         this._console.addMessage(consoleNames.BOT_MESSAGE, message)
         this._console.updateScroll()

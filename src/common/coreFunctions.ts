@@ -18,6 +18,9 @@ export const coreFunctions = {
     SHOW_COMMANDS: () => {
         voiceHelper.commandManager.printCommands()
     },
+    INCREASE_CONSOLE: () => {
+        voiceHelper.consoleDriver.increaseConsole()
+    },
     RELOAD: () => {
         location.reload()
         console.log("RELOAD!")
