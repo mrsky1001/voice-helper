@@ -1,5 +1,6 @@
 import {addBotMessage} from "../index";
 import coreMessages from "./coreMessages";
+import {voiceHelper} from "../voiceHelper/voiceHelper";
 
 export const coreFunctions = {
     HELLO: () => {
@@ -15,9 +16,10 @@ export const coreFunctions = {
         console.log("Incorrect command!")
     },
     SHOW_COMMANDS: () => {
-        console.log("SHOW_COMMANDS!")
+        voiceHelper.commandManager.printCommands()
     },
     RELOAD: () => {
+        location.reload()
         console.log("RELOAD!")
     }
 }

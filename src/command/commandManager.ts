@@ -2,6 +2,8 @@ import {strings} from "../constants/strings"
 import {Command} from "./command"
 import {Settings} from "../settings/settings";
 import {commandTypes} from "../common/commandTypes";
+import {addBotMessage} from "../index";
+import stringSimilarity from "string-similarity";
 
 class CommandManager {
     private readonly _commands: Array<Command>
@@ -47,6 +49,26 @@ class CommandManager {
     /**
      * The global methods
      */
+    printCommands() {
+        let text = "Список доступных команд: <br/>"
+        let counter = 1
+
+        this._commands.forEach(command => {
+            if (command.type !== commandTypes.SYSTEM) {
+                text += "" + counter + ") \"" + command.text + "\". "
+
+                if (command.description !== undefined)
+                    text += command.description
+
+                text += "<br/>"
+
+                counter++
+            }
+        })
+
+        addBotMessage(text)
+    }
+
     run(name: string) {
         try {
             const command = this.commands.find(_ => _.id === name)
@@ -70,25 +92,23 @@ class CommandManager {
 
             const pushMessage = (text) => {
                 const checkSimilar = (command) => {
-                    const percent = CommandManager.similarText(text, command.text)
+                    const percent = stringSimilarity.compareTwoStrings(text, command.text)
 
                     if (percent > resCommand.matchPercent && percent > this._settings.minPercentSimilar) {
                         resCommand = command
                     }
 
-                    console.log("Percent: " + percent + " | Command: " + text + " / CheckedCommand: " + command.text + "")
+                    console.log("Percent: " + percent + " | Command: \"" + text + "\" / CheckedCommand: \"" + command.text + "\"")
                 }
-                console.log(this._commands)
+
                 this._commands.forEach(command => {
                     checkSimilar(command)
                 })
 
-                console.log(resCommand)
                 if (resCommand.type !== commandTypes.SYSTEM)
                     this._pullCommands.push(new Command(resCommand))
 
                 resCommand.func()
-                console.log(this._pullCommands)
                 return true
             }
 
@@ -111,55 +131,58 @@ class CommandManager {
         return this._commands
     }
 
-    private static similarText(first, second, percent = true) {
-        if (first === null || second === null || typeof first === 'undefined' || typeof second === 'undefined') {
-            return 0;
-        }
-
-        first += '';
-        second += '';
-
-        let pos1 = 0;
-        let pos2 = 0;
-        let max = 0;
-        let firstLength = first.length;
-        let secondLength = second.length;
-        let p;
-        let q;
-        let l;
-        let sum;
-
-        for (p = 0; p < firstLength; p++) {
-            for (q = 0; q < secondLength; q++) {
-                for (l = 0; p + l < firstLength && q + l < secondLength && first.charAt(p + l) === second.charAt(q + l); l++) {// eslint-disable-line max-len
-                    // @todo: ^-- break up this crazy for loop and put the logic in its body
-                }
-                if (l > max) {
-                    max = l;
-                    pos1 = p;
-                    pos2 = q;
-                }
-            }
-        }
-
-        sum = max;
-
-        if (sum) {
-            if (pos1 && pos2) {
-                sum += this.similarText(first.substr(0, pos1), second.substr(0, pos2));
-            }
-
-            if (pos1 + max < firstLength && pos2 + max < secondLength) {
-                sum += this.similarText(first.substr(pos1 + max, firstLength - pos1 - max), second.substr(pos2 + max, secondLength - pos2 - max));
-            }
-        }
-
-        if (!percent) {
-            return sum;
-        }
-
-        return sum * 200 / (firstLength + secondLength);
-    }
+    // private static similarText(first, second, percent = true) {
+    //     if (first === null ||
+    //         second === null ||
+    //         typeof first === 'undefined' ||
+    //         typeof second === 'undefined' ||
+    //         String(first).trim().length === 0 ||
+    //         String(second).trim().length === 0) {
+    //         return 0
+    //     }
+    //
+    //     first = first.toLowerCase()+ ''
+    //     second = first.toLowerCase()+ ''
+    //
+    //     let pos1 = 0
+    //     let pos2 = 0
+    //     let max = 0
+    //     let firstLength = first.length
+    //     let secondLength = second.length
+    //     let l
+    //     let sum
+    //
+    //     for (let p = 0; p < firstLength; p++) {
+    //         for (let q = 0; q < secondLength; q++) {
+    //             for (l = 0; p + l < firstLength && q + l < secondLength && first.charAt(p + l) === second.charAt(q + l); l++) {// eslint-disable-line max-len
+    //                 // @todo: ^-- break up this crazy for loop and put the logic in its body
+    //             }
+    //             if (l > max) {
+    //                 max = l
+    //                 pos1 = p
+    //                 pos2 = q
+    //             }
+    //         }
+    //     }
+    //
+    //     sum = max
+    //
+    //     if (sum) {
+    //         if (pos1 && pos2) {
+    //             sum += this.similarText(first.substr(0, pos1), second.substr(0, pos2))
+    //         }
+    //
+    //         if (pos1 + max < firstLength && pos2 + max < secondLength) {
+    //             sum += this.similarText(first.substr(pos1 + max, firstLength - pos1 - max), second.substr(pos2 + max, secondLength - pos2 - max))
+    //         }
+    //     }
+    //
+    //     if (!percent) {
+    //         return sum
+    //     }
+    //
+    //     return sum * 200 / (firstLength + secondLength)
+    // }
 }
 
 export default CommandManager

@@ -8,7 +8,7 @@ $border: solid 1px $second_color;
   border-radius: $border-radius;
   padding: 0.3rem;
   width: fit-content;
-
+  font-family: monospace;
 }
 
 #console-driver {
@@ -105,7 +105,7 @@ $border: solid 1px $second_color;
 
     .bot-message-line {
       .message {
-        background-color: cornflowerblue;
+        background-color: #7fa2e0;
         color: white;
         @include message;
       }

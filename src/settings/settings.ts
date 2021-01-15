@@ -8,7 +8,7 @@ class Settings implements ISettings {
     private readonly _minPercentSimilar: number
     private readonly _notFoundCommandId = "notFound"
 
-    constructor(settings: ISettings = {minMessageSize: 5, minPercentSimilar: 40}) {
+    constructor(settings: ISettings = {minMessageSize: 5, minPercentSimilar: 0.4}) {
         this._minMessageSize = settings.minMessageSize
         this._minPercentSimilar = settings.minPercentSimilar
     }

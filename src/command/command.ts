@@ -3,6 +3,7 @@ import {commandTypes} from "../common/commandTypes";
 interface ICommand {
     id: string
     text: string
+    description: string
     type: string
     func: () => any
 }
@@ -10,6 +11,7 @@ interface ICommand {
 class Command implements ICommand {
     private readonly _id: string
     private readonly _text: string
+    private readonly _description: string
     private readonly _type: string
     private readonly _func: () => any
 
@@ -18,9 +20,10 @@ class Command implements ICommand {
     private _userText
     private _matchPercent
 
-    constructor({id, text, type = commandTypes.DEFAULT, func}: ICommand) {
+    constructor({id, text="", description, type = commandTypes.DEFAULT, func}: ICommand) {
         this._id = id
         this._text = text
+        this._description = description
         this._type = type
         this._func = func
 
@@ -40,6 +43,10 @@ class Command implements ICommand {
     /**
      * getters and setters
      */
+    get description(): string {
+        return this._description;
+    }
+
     get type() {
         return this._type;
     }

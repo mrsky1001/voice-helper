@@ -22,15 +22,17 @@ export const coreCommands = [
     },
     {
         id: "commands",
-        text: "Команды",
+        text: "Список команд",
+        description: "Показывает список доступных комманд для вызова через консоль или голосом.",
         type:commandTypes.INFO,
-        func: coreFunctions.HELLO
+        func: coreFunctions.SHOW_COMMANDS
     },
     {
         id: "reloadPage",
         text: "Перезагрузить сайт",
+        description: "Перезагрузка сайта.",
         type:commandTypes.INFO,
-        func: coreFunctions.HELLO
+        func: coreFunctions.RELOAD
     }
 ]
 
