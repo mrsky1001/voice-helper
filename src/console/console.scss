@@ -11,6 +11,28 @@ $border: solid 1px $second_color;
   font-family: monospace;
 }
 
+#show-console-bars {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 5%;
+  padding: 1rem;
+  border-top: solid $main_color;
+  box-shadow: 0 0 30px $shadow_color;
+  border-radius: 0.4rem;
+  z-index: 9999;
+  background: inherit;
+  text-align: center;
+
+  &:hover {
+    cursor: pointer;
+    color: $main_color;
+  }
+
+  &.hide-console {
+    display: none;
+  }
+}
 
 #console-driver {
   position: fixed;
@@ -51,11 +73,6 @@ $border: solid 1px $second_color;
     height: 90%;
   }
 
-  #show-console-bars {
-    &.hide-console {
-      display: none;
-    }
-  }
 
   #title-container {
     height: 1.4rem;

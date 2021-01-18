@@ -36,7 +36,7 @@ export const coreCommands = [
     },
     {
         id: "decreaseHeightConsole",
-        text: ["уменьши высоту консоли", "уменьшить размер консоли"],
+        text: ["Уменьши высоту консоли", "уменьшить размер консоли"],
         description: "Уменьшает высоту консоли.",
         type: commandTypes.INFO,
         func: coreFunctions.DECREASE_CONSOLE

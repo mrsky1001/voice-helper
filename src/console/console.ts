@@ -14,8 +14,7 @@ class Console {
 
     constructor(parent: ConsoleDriver) {
         this._consoleElemDom = $(`
-            <div id="${consoleNames.CONSOLE_ID}">
-                <div id="console-container">
+                <div id="${consoleNames.CONSOLE_ID}">
                     <div id="title-container">
                         <span id="title-text">${strings.CONSOLE_TITLE}</span>
                         <button id="${consoleNames.TITLE_CLOSE_BUTTON}" class="fa fa-close"></button>
@@ -25,9 +24,10 @@ class Console {
                        <textarea id="${consoleNames.COMMAND_INPUT}" placeholder="Введите команду..." ></textarea>
                        <button id="${consoleNames.SEND_COMMAND}" >Оправить</button>
                     </div>            
-                </div>     
-                <div id="${consoleNames.SHOW_CONSOLE_BUTTON}" class="hide-console"><i class="fa fa-bars"></i></div>
-            </div>
+                </div>
+                <div id="${consoleNames.SHOW_CONSOLE_BUTTON}" class="hide-console">
+                    <i class="fa fa-bars"></i>
+                </div> 
         `)
 
         this._parent = parent
@@ -94,6 +94,7 @@ class Console {
         const commandInput = $("#" + consoleNames.COMMAND_INPUT)
         const sendButton = $("#" + consoleNames.SEND_COMMAND)
         const closeButton = $("#" + consoleNames.TITLE_CLOSE_BUTTON)
+        const showButton = $("#" + consoleNames.SHOW_CONSOLE_BUTTON)
 
         const sendMessage = () => {
             const message = String(commandInput.val()).replace("\n", "")
@@ -106,12 +107,8 @@ class Console {
         }
 
         closeButton.on('click', this.close)
-
-        sendButton.on('click',
-            (e) =>
-                sendMessage()
-        )
-
+        showButton.on('click', this.showConsole)
+        sendButton.on('click', sendMessage)
         commandInput.on('keyup',
             (e) => {
                 if (e.key === 'Enter') {
@@ -123,6 +120,22 @@ class Console {
                 }
             }
         )
+    }
+
+    private showConsole() {
+        const console = $("#" + consoleNames.CONSOLE_ID)
+        const showButton = $("#" + consoleNames.SHOW_CONSOLE_BUTTON)
+
+        console.removeClass("hide-console")
+        showButton.addClass("hide-console")
+    }
+
+    private close() {
+        const console = $("#" + consoleNames.CONSOLE_ID)
+        const showButton = $("#" + consoleNames.SHOW_CONSOLE_BUTTON)
+
+        console.addClass("hide-console")
+        showButton.removeClass("hide-console")
     }
 
     private get messageContainer() {
@@ -162,13 +175,6 @@ class Console {
         }
     }
 
-    close() {
-        const consoleContainer = $("#" + consoleNames.CONSOLE_CONTAINER_ID)
-        const showButton = $("#" + consoleNames.SHOW_CONSOLE_BUTTON)
-        consoleContainer.addClass("hide-console")
-        showButton.removeClass("hide-console")
-    }
-
     clearSendForm() {
         const commandInput = $("#" + consoleNames.COMMAND_INPUT)
 
@@ -191,11 +197,6 @@ class Console {
         this.appendConsole()
         this.appendEventHandlers()
 
-        const consoleContainer = $("#" + consoleNames.CONSOLE_CONTAINER_ID)
-        const showButton = $("#" + consoleNames.SHOW_CONSOLE_BUTTON)
-
-        consoleContainer.removeClass("hide-console")
-        showButton.addClass("hide-console")
     }
 }
 
