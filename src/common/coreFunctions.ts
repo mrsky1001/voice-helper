@@ -21,6 +21,9 @@ export const coreFunctions = {
     INCREASE_CONSOLE: () => {
         voiceHelper.consoleDriver.increaseConsole()
     },
+    DECREASE_CONSOLE: () => {
+        voiceHelper.consoleDriver.decreaseConsole()
+    },
     RELOAD: () => {
         location.reload()
         console.log("RELOAD!")

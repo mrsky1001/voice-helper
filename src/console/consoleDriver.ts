@@ -2,14 +2,17 @@ import Console from "./console";
 import CommandManager from "../command/commandManager";
 import {consoleNames} from "./consoleNames";
 import {Settings} from "../settings/settings";
+import StorageManager from "../storageManager/storageManager";
 
 class ConsoleDriver {
     private readonly _console: Console
     private readonly _commandManager: CommandManager
     private readonly _settings: Settings
+    private readonly _storageManager: StorageManager
 
-    constructor(commandManager: CommandManager, settings: Settings) {
+    constructor(commandManager: CommandManager, settings: Settings, storageManager: StorageManager) {
         this._commandManager = commandManager
+        this._storageManager = storageManager
         this._console = new Console(this)
         this._settings = settings
     }
@@ -27,15 +30,11 @@ class ConsoleDriver {
      * The global methods
      */
     increaseConsole() {
-        this._console.resize(this._settings.scaleSize)
+        this._console.increaseSize()
     }
 
     decreaseConsole() {
-        this._console.resize(-this._settings.scaleSize)
-    }
-
-    resetSizeConsole() {
-        this._console.resize(-this._settings.scaleSize)
+        this._console.decreaseSize()
     }
 
     addBotMessage(message) {
@@ -52,6 +51,9 @@ class ConsoleDriver {
         this._console.show()
     }
 
+    get storageManager(): StorageManager {
+        return this._storageManager
+    }
 }
 
 export default ConsoleDriver

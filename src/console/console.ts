@@ -1,4 +1,5 @@
 import "./console.scss"
+
 import $ from "../common/import-jquery"
 import {strings} from "../constants/strings";
 import {consoleNames} from "./consoleNames";
@@ -14,29 +15,33 @@ class Console {
     constructor(parent: ConsoleDriver) {
         this._consoleElemDom = $(`
             <div id="${consoleNames.CONSOLE_ID}">
-                <div id="title-container">
-                    <span id="title-text">${strings.CONSOLE_TITLE}</span>
-                    <button id="title-close-button">X</button>
-                </div>
-                <div id="${consoleNames.MESSAGE_CONTAINER_ID}"></div>
-                <div id="form-command">
-                   <textarea id="${consoleNames.COMMAND_INPUT}" placeholder="Введите команду..." ></textarea>
-                   <button id="${consoleNames.SEND_COMMAND}" >Оправить</button>
-                </div>            
+                <div id="console-container">
+                    <div id="title-container">
+                        <span id="title-text">${strings.CONSOLE_TITLE}</span>
+                        <button id="${consoleNames.TITLE_CLOSE_BUTTON}" class="fa fa-close"></button>
+                    </div>
+                    <div id="${consoleNames.MESSAGE_CONTAINER_ID}"></div>
+                    <div id="form-command">
+                       <textarea id="${consoleNames.COMMAND_INPUT}" placeholder="Введите команду..." ></textarea>
+                       <button id="${consoleNames.SEND_COMMAND}" >Оправить</button>
+                    </div>            
+                </div>     
+                <div id="${consoleNames.SHOW_CONSOLE_BUTTON}" class="hide-console"><i class="fa fa-bars"></i></div>
             </div>
         `)
 
         this._parent = parent
-        this._pullMessages = []
-        this._indexMessage = 0
+        this._pullMessages = parent.storageManager.listMessages
+        this._indexMessage = -1
     }
 
     /**
      * The private methods
      */
     private get indexMessage(): number {
-        this._indexMessage = this._pullMessages.length > 0 ?
-            this._pullMessages.length - 1 : 0
+        if (this._indexMessage === -1)
+            this._indexMessage = this._pullMessages.length > 0 ?
+                this._pullMessages.length - 1 : 0
         return this._indexMessage
     }
 
@@ -45,8 +50,10 @@ class Console {
     }
 
     private get prevMessage(): string {
+        const commandInput = $("#" + consoleNames.COMMAND_INPUT)
+
         if (this._pullMessages.length > 0) {
-            if (this.indexMessage > 0)
+            if (this.indexMessage > 0 && String(commandInput.val()).length)
                 this.indexMessage--
             return this._pullMessages[this.indexMessage]
         } else
@@ -66,6 +73,7 @@ class Console {
 
     private pushMessage(text: string) {
         this._pullMessages.push(text)
+        this._parent.storageManager.listMessages = this._pullMessages
         this.indexMessage = this._pullMessages.length - 1;
     }
 
@@ -85,6 +93,7 @@ class Console {
     private appendEventHandlers() {
         const commandInput = $("#" + consoleNames.COMMAND_INPUT)
         const sendButton = $("#" + consoleNames.SEND_COMMAND)
+        const closeButton = $("#" + consoleNames.TITLE_CLOSE_BUTTON)
 
         const sendMessage = () => {
             const message = String(commandInput.val()).replace("\n", "")
@@ -95,6 +104,8 @@ class Console {
             } else
                 commandInput.val("")
         }
+
+        closeButton.on('click', this.close)
 
         sendButton.on('click',
             (e) =>
@@ -121,10 +132,41 @@ class Console {
     /**
      * The global methods
      */
-    resize(scale: number) {
-        const commandInput = $("#" + consoleNames.COMMAND_INPUT)
+    increaseSize() {
+        const console = $("#" + consoleNames.CONSOLE_ID)
+        const containerMessage = $("#" + consoleNames.MESSAGE_CONTAINER_ID)
 
-        commandInput.height(commandInput.height() + scale)
+        if (!console.hasClass("middle-console") && !console.hasClass("large-console")) {
+            console.addClass("middle-console")
+            containerMessage.addClass("middle-console")
+        } else if (console.hasClass("middle-console")) {
+            console.removeClass("middle-console")
+            containerMessage.removeClass("middle-console")
+            console.addClass("large-console")
+        }
+
+        // containerMessage.height(containerMessage.height() + scale)
+    }
+
+    decreaseSize() {
+        const console = $("#" + consoleNames.CONSOLE_ID)
+        const containerMessage = $("#" + consoleNames.MESSAGE_CONTAINER_ID)
+
+        if (console.hasClass("large-console")) {
+            console.removeClass("large-console")
+            console.addClass("middle-console")
+            containerMessage.addClass("middle-console")
+        } else if (console.hasClass("middle-console")) {
+            console.removeClass("middle-console")
+            containerMessage.removeClass("middle-console")
+        }
+    }
+
+    close() {
+        const consoleContainer = $("#" + consoleNames.CONSOLE_CONTAINER_ID)
+        const showButton = $("#" + consoleNames.SHOW_CONSOLE_BUTTON)
+        consoleContainer.addClass("hide-console")
+        showButton.removeClass("hide-console")
     }
 
     clearSendForm() {
@@ -148,6 +190,12 @@ class Console {
     show() {
         this.appendConsole()
         this.appendEventHandlers()
+
+        const consoleContainer = $("#" + consoleNames.CONSOLE_CONTAINER_ID)
+        const showButton = $("#" + consoleNames.SHOW_CONSOLE_BUTTON)
+
+        consoleContainer.removeClass("hide-console")
+        showButton.addClass("hide-console")
     }
 }
 

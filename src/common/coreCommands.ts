@@ -4,7 +4,7 @@ import {commandTypes} from "./commandTypes";
 export const coreCommands = [
     {
         id: "hello",
-        text: "",
+        text: "Привет",
         type: commandTypes.SYSTEM,
         func: coreFunctions.HELLO
     },
@@ -28,11 +28,18 @@ export const coreCommands = [
         func: coreFunctions.SHOW_COMMANDS
     },
     {
-        id: "resizeHeightConsole",
+        id: "increaseHeightConsole",
         text: ["Увеличь высоту консоли", "Увеличить размер консоли"],
-        description: "Показывает список доступных комманд для вызова через консоль или голосом.",
+        description: "Увеличивает высоту консоли.",
         type: commandTypes.INFO,
         func: coreFunctions.INCREASE_CONSOLE
+    },
+    {
+        id: "decreaseHeightConsole",
+        text: ["уменьши высоту консоли", "уменьшить размер консоли"],
+        description: "Уменьшает высоту консоли.",
+        type: commandTypes.INFO,
+        func: coreFunctions.DECREASE_CONSOLE
     },
     {
         id: "reloadPage",

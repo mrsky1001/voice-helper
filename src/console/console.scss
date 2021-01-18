@@ -11,10 +11,11 @@ $border: solid 1px $second_color;
   font-family: monospace;
 }
 
+
 #console-driver {
   position: fixed;
   bottom: 0;
-  height: 25%;
+  //height: 25%;
   min-height: 20rem;
   width: 20%;
   min-width: 15rem;
@@ -37,6 +38,24 @@ $border: solid 1px $second_color;
   color: #212529;
   text-align: left;
   background-color: #fff;
+
+  &.hide-console {
+    display: none;
+  }
+
+  &.middle-console {
+    height: 50%;
+  }
+
+  &.large-console {
+    height: 90%;
+  }
+
+  #show-console-bars {
+    &.hide-console {
+      display: none;
+    }
+  }
 
   #title-container {
     height: 1.4rem;
@@ -62,13 +81,19 @@ $border: solid 1px $second_color;
   }
 
   #message-container {
-    height: 65%;
+    height: 15rem;
+    max-height: 80%;
+    min-height: 80%;
     display: grid;
     overflow: hidden;
     margin-bottom: .5rem;
     padding: .5rem;
     background: linear-gradient(0, #ffffff 90%, #d8d8d8 120%);
     border-radius: inherit;
+
+    &.middle-console {
+      min-height: 70%;
+    }
 
     &:hover {
       overflow: auto;

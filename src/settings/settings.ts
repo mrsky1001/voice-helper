@@ -4,32 +4,38 @@ interface ISettings {
     scaleSize?: number
     width?: string
     height?: string
+    maxSizeListMessage?: number
 }
 
 class Settings implements ISettings {
     private readonly _minMessageSize: number
     private readonly _minPercentSimilar: number
-    private readonly _scaleSize: number
     private readonly _height: string
     private readonly _width: string
+    private readonly _maxSizeListMessage: number
     private readonly _notFoundCommandId = "notFound"
 
     constructor(settings: ISettings = {
         minMessageSize: 5,
         minPercentSimilar: 0.4,
-        scaleSize: 30,
+        scaleSize: 100,
         width: '20%',
-        height: '25%'
+        height: '25%',
+        maxSizeListMessage: 100
     }) {
         this._minMessageSize = settings.minMessageSize
         this._minPercentSimilar = settings.minPercentSimilar
-        this._scaleSize = settings.scaleSize
         this._height = settings.height
         this._width = settings.width
+        this._maxSizeListMessage = settings.maxSizeListMessage
     }
 
-    get scaleSize(): number {
-        return this._scaleSize;
+    get maxSizeListMessage(): number {
+        return this._maxSizeListMessage;
+    }
+
+    get height(): string {
+        return this._height;
     }
 
     get minMessageSize() {
