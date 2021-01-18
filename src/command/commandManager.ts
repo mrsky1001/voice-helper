@@ -129,7 +129,7 @@ class CommandManager {
 
                 listPercentMatches.forEach((elem) => {
                     if (command.matchPercent - elem.matchPercent <= this._settings.matchesCoefficient)
-                        matches.push(command)
+                        matches.push(elem)
                 })
 
                 return matches

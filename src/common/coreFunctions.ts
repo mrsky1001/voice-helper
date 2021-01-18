@@ -11,7 +11,6 @@ export const coreFunctions = {
         let text = String(coreMessages.MATCHES_MORE_ONE)
         text += voiceHelper.commandManager.getTextCommands(matches)
 
-        console.log(text)
         addBotMessage(text)
     },
     SMALL_OR_EMPTY: () => {

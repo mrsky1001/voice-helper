@@ -29,14 +29,14 @@ export const coreCommands = [
     },
     {
         id: "increaseHeightConsole",
-        text: ["Увеличь высоту консоли", "Увеличить размер консоли"],
+        text: "Увеличить высоту консоли",
         description: "Увеличивает высоту консоли.",
         type: commandTypes.INFO,
         func: coreFunctions.INCREASE_CONSOLE
     },
     {
         id: "decreaseHeightConsole",
-        text: ["Уменьши высоту консоли", "уменьшить размер консоли"],
+        text: "Уменьшить высоту консоли",
         description: "Уменьшает высоту консоли.",
         type: commandTypes.INFO,
         func: coreFunctions.DECREASE_CONSOLE
