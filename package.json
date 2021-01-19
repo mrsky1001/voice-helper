@@ -1,6 +1,6 @@
 {
   "name": "voice-helper",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Voice Helper for sites on TypeScript",
   "main": "dist/index.js",
   "scripts": {
