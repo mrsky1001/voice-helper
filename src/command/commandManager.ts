@@ -110,11 +110,9 @@ class CommandManager {
       };
 
       const pushMessage = (): boolean => {
-        const listPercentMatches: Command[] = this._commands.map(
-          (command): Command => {
-            return checkSimilar(command);
-          },
-        );
+        const listPercentMatches: Command[] = this._commands.map((command): Command => {
+          return checkSimilar(command);
+        });
 
         if (resCommand.matchPercent > 0) {
           const matches = checkMatches(listPercentMatches, resCommand);

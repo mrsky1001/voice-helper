@@ -7,7 +7,7 @@
     "serve": "parcel serve index.html",
     "compile": "parcel build src/index.ts",
     "prepublish": "npm run compile",
-    "lint": "tslint --project tslint.ide_only.json --fix --force"
+    "lint": "prettier --write --config .prettierr.yaml src/**/*.* & tslint --project tslint.ide_only.json --fix --force"
   },
   "repository": {
     "type": "git",
@@ -58,13 +58,13 @@
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-preset-ts": "0.0.0",
     "codelyzer": "^6.0.1",
-    "husky": "^4.3.0",
-    "lint-staged": "^10.5.2",
+    "husky": "^4.3.8",
+    "lint-staged": "^10.5.3",
     "node-sass": "^4.12.0",
     "parcel": "^1.12.4",
     "parcel-bundler": "^1.12.3",
     "parcel-proxy-server": "^1.1.0",
-    "prettier": "^2.2.0",
+    "prettier": "1.12.1",
     "sass": "^1.25.0",
     "sass-loader": "^7.1.0",
     "sys": "0.0.1",
