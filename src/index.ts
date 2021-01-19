@@ -2,7 +2,7 @@
  * Copyright (c) 2021.  Author: Nikita Kolyada. Email: nikita.nk16@yandex.ru
  */
 
-import '../node_modules/font-awesome/scss/font-awesome.scss';
+import 'font-awesome/scss/font-awesome.scss';
 import { ICommand } from './command/command';
 import { ISettings } from './settings/settings';
 import { voiceHelper } from './voiceHelper/voiceHelper';
