@@ -1,7 +1,11 @@
-export const functions = {
-    RELOAD: () => {
-        location.reload()
-    }
-}
+/*
+ * Copyright (c) 2021.  Author: Nikita Kolyada. Email: nikita.nk16@yandex.ru
+ */
 
-export default functions
+export const functions = {
+  RELOAD: (): void => {
+    location.reload();
+  },
+};
+
+export default functions;

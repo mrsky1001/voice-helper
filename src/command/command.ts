@@ -1,100 +1,96 @@
-import {commandTypes} from "../common/commandTypes";
+/*
+ * Copyright (c) 2021.  Author: Nikita Kolyada. Email: nikita.nk16@yandex.ru
+ */
+
+/*
+ * Copyright (c) 2021.  Author: Nikita Kolyada. Email: nikita.nk16@yandex.ru
+ */
+
+import { commandTypes } from '../common/commandTypes';
 
 interface ICommand {
-    id: string
-    text: Array<string>
-    description: string
-    type: string
-    func: () => any
+  id: string;
+  listTexts: string[];
+  description: string;
+  type: string;
+  // tslint:disable-next-line
+  func: () => any;
 }
 
 class Command implements ICommand {
-    private readonly _id: string
-    private readonly _text: Array<string>
-    private readonly _description: string
-    private readonly _type: string
-    private readonly _func: () => any
+  private readonly _id: string;
+  private readonly _listTexts: string[];
+  private readonly _description: string;
+  private readonly _type: string;
+  // tslint:disable-next-line
+  private readonly _func: () => any;
+  private _isExecuted;
+  private _userText;
+  private _matchPercent;
 
-    private _isRun
-    private _isExecuted
-    private _userText
-    private _matchPercent
+  constructor({ id, listTexts = [], description, type = commandTypes.DEFAULT, func }: ICommand) {
+    this._id = id;
+    this._listTexts = listTexts;
+    this._description = description;
+    this._type = type;
+    this._func = func;
 
-    constructor({id, text=[], description, type = commandTypes.DEFAULT, func}: ICommand) {
-        this._id = id
-        this._text = text
-        this._description = description
-        this._type = type
-        this._func = func
+    this._matchPercent = 0;
+    this._userText = '';
+    this._isExecuted = false;
+  }
 
-        this._matchPercent = 0
-        this._userText = ""
-        this._isExecuted = false
-        this._isRun = false
-    }
+  /**
+   * The global methods
+   */
 
-    /**
-     * The global methods
-     */
-    start() {
-        this.isRun = true
-    }
+  /**
+   * getters and setters
+   */
+  public get description(): string {
+    return this._description;
+  }
 
-    /**
-     * getters and setters
-     */
-    get description(): string {
-        return this._description;
-    }
+  public get type(): string {
+    return this._type;
+  }
 
-    get type() {
-        return this._type;
-    }
+  public get userText(): string {
+    return this._userText;
+  }
 
-    get userText() {
-        return this._userText;
-    }
+  public set userText(value) {
+    this._userText = value;
+  }
 
-    set userText(value) {
-        this._userText = value;
-    }
+  public get matchPercent(): number {
+    return this._matchPercent;
+  }
 
-    get matchPercent() {
-        return this._matchPercent;
-    }
+  public set matchPercent(value) {
+    this._matchPercent = value;
+  }
 
-    set matchPercent(value) {
-        this._matchPercent = value;
-    }
+  public get id(): string {
+    return this._id;
+  }
 
-    get id() {
-        return this._id;
-    }
+  public get listTexts(): string[] {
+    return this._listTexts;
+  }
 
-    get text() {
-        return this._text;
-    }
+  // tslint:disable-next-line
+  public get func(): () => any {
+    return this._func;
+  }
 
-    get func() {
-        return this._func;
-    }
+  public get isExecuted(): boolean {
+    return this._isExecuted;
+  }
 
-    get isRun() {
-        return this._isRun
-    }
-
-    set isRun(value) {
-        this._isRun = value
-    }
-
-    get isExecuted() {
-        return this._isExecuted
-    }
-
-    set isExecuted(value) {
-        this._isExecuted = value
-    }
-
+  public set isExecuted(value) {
+    this._isExecuted = value;
+  }
 }
 
-export {Command, ICommand}
+export { Command, ICommand };

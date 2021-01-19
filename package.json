@@ -6,7 +6,8 @@
   "scripts": {
     "serve": "parcel serve index.html",
     "compile": "parcel build src/index.ts",
-    "prepublish": "npm run compile"
+    "prepublish": "npm run compile",
+    "lint": "tslint --project tslint.ide_only.json --fix --force"
   },
   "repository": {
     "type": "git",
@@ -27,7 +28,6 @@
     "*.{ts, tsx, js}": [
       "prettier --write --config .prettierr.yaml",
       "tslint --project tsconfig.json --fix --force",
-      "sh lint.sh partner-account",
       "git add"
     ],
     "*.{html,scss,css}": [
@@ -39,6 +39,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.12.1",
     "font-awesome": "^4.7.0",
     "jquery": "^3.5.1",
+    "lodash.clonedeep": "^4.5.0",
     "node-sass": "^4.14.1",
     "resizable": "^1.2.1",
     "sass-loader": "^10.0.1",

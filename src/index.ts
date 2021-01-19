@@ -1,14 +1,18 @@
-import {voiceHelper} from "./voiceHelper/voiceHelper"
-import {ISettings} from "./settings/settings";
-import {ICommand} from "./command/command";
-import "../node_modules/font-awesome/scss/font-awesome.scss";
+/*
+ * Copyright (c) 2021.  Author: Nikita Kolyada. Email: nikita.nk16@yandex.ru
+ */
 
-export const startVoiceHelper = (commands: Array<ICommand>, settings?: ISettings) => {
-    voiceHelper.init(commands, settings)
-}
+import '../node_modules/font-awesome/scss/font-awesome.scss';
+import { ICommand } from './command/command';
+import { ISettings } from './settings/settings';
+import { voiceHelper } from './voiceHelper/voiceHelper';
 
-export const addBotMessage = (message) => {
-    voiceHelper.consoleDriver.addBotMessage(message)
-}
+export const startVoiceHelper = (commands: ICommand[], settings?: ISettings): void => {
+  voiceHelper.init(commands, settings);
+};
 
-export default {startVoiceHelper, addBotMessage}
+export const addBotMessage = (message): void => {
+  voiceHelper.consoleDriver.addBotMessage(message);
+};
+
+export default { startVoiceHelper, addBotMessage };

@@ -1,7 +1,11 @@
+/*!
+ * Copyright (c) 2021.  Author: Nikita Kolyada. Email: nikita.nk16@yandex.ru
+ */
+
 $main_color: #007bff;
 $second_color: #9e9e9e;
 $shadow_color: #007bff2e;
-$border_radius: .4rem;
+$border_radius: 0.4rem;
 $border: solid 1px $second_color;
 
 @mixin message {
@@ -51,9 +55,7 @@ $border: solid 1px $second_color;
   background: inherit;
 
   /** font-settings **/
-  font-family: -apple-system, BlinkMacSystemFont,
-  Segoe UI, Roboto, Helvetica Neue,
-  Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
   font-size: 0.85rem;
   font-weight: 400;
   line-height: 1.5;
@@ -72,7 +74,6 @@ $border: solid 1px $second_color;
   &.large-console {
     height: 90%;
   }
-
 
   #title-container {
     height: 1.4rem;
@@ -94,7 +95,6 @@ $border: solid 1px $second_color;
         outline-color: $main_color;
       }
     }
-
   }
 
   #message-container {
@@ -103,8 +103,8 @@ $border: solid 1px $second_color;
     min-height: 80%;
     display: grid;
     overflow: hidden;
-    margin-bottom: .5rem;
-    padding: .5rem;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
     background: linear-gradient(0, #ffffff 90%, #d8d8d8 120%);
     border-radius: inherit;
 
@@ -147,13 +147,14 @@ $border: solid 1px $second_color;
 
     .bot-message-line {
       .message {
-        background-color: #7fa2e0;
+        background-color: #5179c1;
         color: white;
         @include message;
       }
     }
 
-    .bot-message-line, .command-message-line {
+    .bot-message-line,
+    .command-message-line {
       width: 100%;
       padding: 0.5rem 0 0 0;
     }
@@ -180,5 +181,3 @@ $border: solid 1px $second_color;
     }
   }
 }
-
-
