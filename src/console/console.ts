@@ -2,10 +2,9 @@
  * Copyright (c) 2021.  Author: Nikita Kolyada. Email: nikita.nk16@yandex.ru
  */
 
-import './console.scss';
-
 import $ from '../common/import-jquery';
 import { strings } from '../constants/strings';
+import './console.scss';
 import ConsoleDriver from './consoleDriver';
 import { consoleNames } from './consoleNames';
 

@@ -1,11 +1,11 @@
 {
   "name": "voice-helper",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Voice Helper for sites on TypeScript",
   "main": "dist/index.js",
   "scripts": {
     "serve": "parcel serve index.html",
-    "compile": "parcel build src/index.ts",
+    "compile": "parcel build src/index.ts --public-url ./",
     "prepublish": "npm run compile",
     "lint": "prettier --write --config .prettierr.yaml src/**/*.* & tslint --project tslint.ide_only.json --fix --force"
   },
@@ -37,7 +37,6 @@
   },
   "dependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.12.1",
-    "font-awesome": "^4.7.0",
     "jquery": "^3.5.1",
     "lodash.clonedeep": "^4.5.0",
     "node-sass": "^4.14.1",
