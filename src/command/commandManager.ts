@@ -43,7 +43,7 @@ class CommandManager {
           text += `${counter}) "${command.listTexts[0]}".`;
 
           if (command.description !== undefined) {
-            text += command.description;
+            text += `<br/> ${command.description}`;
           }
 
           text += '<br/>';
