@@ -139,7 +139,7 @@ class Console {
     this.messageContainer.scrollTop(this._MAX_SCROLL);
   }
 
-  public addMessage(className, message = ''): void {
+  public addMessage(className:string, message:string = ''): void {
     if (message.trim().length > 0) {
       this.messageContainer.append(`<div class="${className}">
                     <div class="message">${message}</div>
