@@ -26,7 +26,7 @@ class ConsoleDriver {
      */
     public commandCallback(text): void {
         this.addCommandMessage(String(text));
-        this._commandManager.parseTextToCommand(text);
+        this._commandManager.parseCommand(text);
     }
 
     public increaseConsole(): void {

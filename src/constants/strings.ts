@@ -8,6 +8,7 @@ export enum strings {
   FILE_LOADED = 'Загружен',
   COMMAND_NOT_EXECUTED = 'Command not executed!',
   ERROR_STOP = 'The VoiceHelper was stopped!',
+  INCORRECT_LIST_SIMILAR = 'Incorrect list of similar!',
 }
 
 export default strings;

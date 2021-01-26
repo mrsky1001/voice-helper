@@ -11,12 +11,6 @@ export const coreFunctions = {
   HELLO: (): void => {
     addBotMessage(coreMessages.HELLO);
   },
-  MATCHES_MORE_ONE: (matches: Command[]): void => {
-    let text = String(coreMessages.MATCHES_MORE_ONE);
-    text += voiceHelper.commandManager.getTextCommands(matches);
-
-    addBotMessage(text);
-  },
   SMALL_OR_EMPTY: (): void => {
     addBotMessage(coreMessages.SMALL_OR_EMPTY);
   },
@@ -27,7 +21,7 @@ export const coreFunctions = {
     console.log('Incorrect command!');
   },
   SHOW_COMMANDS: (): void => {
-    addBotMessage(voiceHelper.commandManager.getTextCommands());
+    addBotMessage(voiceHelper.commandManager.parseCommandsToText());
   },
   INCREASE_CONSOLE: (): void => {
     voiceHelper.consoleDriver.increaseConsole();

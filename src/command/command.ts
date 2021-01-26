@@ -1,11 +1,6 @@
 /*
  * Copyright (c) 2021.  Author: Nikita Kolyada. Email: nikita.nk16@yandex.ru
  */
-
-/*
- * Copyright (c) 2021.  Author: Nikita Kolyada. Email: nikita.nk16@yandex.ru
- */
-
 import {commandTypes} from '../common/commandTypes';
 
 interface ICommand {
@@ -13,6 +8,7 @@ interface ICommand {
     listTexts: string[];
     description: string;
     type: string;
+    matchPercent: number;
     // tslint:disable-next-line
     func: (msg?: string) => any;
 }

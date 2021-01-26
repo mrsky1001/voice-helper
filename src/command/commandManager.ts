@@ -2,147 +2,26 @@
  * Copyright (c) 2021.  Author: Nikita Kolyada. Email: nikita.nk16@yandex.ru
  */
 
-import stringSimilarity from 'string-similarity';
 import {commandTypes} from '../common/commandTypes';
-import coreFunctions from '../common/coreFunctions';
 import {strings} from '../constants/strings';
 import {Settings} from '../settings/settings';
-import {Command} from './command';
+import {Command, ICommand} from './command';
+import SimilarManager from "./similarManager";
+import {IPercentMatch} from "./percentMatch";
 
 class CommandManager {
-    /**
-     * getters and setters
-     */
-    public get commands(): Command[] {
-        return this._commands;
-    }
-
     private readonly _commands: Command[];
     private readonly _pullCommands: Command[];
     private readonly _settings: Settings;
+    private readonly _similarManager: SimilarManager;
 
     constructor(commands, coreCommands, settings) {
         this._commands = [];
         this._pullCommands = [];
         this._settings = settings;
+        this._similarManager = new SimilarManager(this, settings);
 
         this.parseCommands(commands, coreCommands);
-    }
-
-    /**
-     * The global methods
-     */
-
-    public getTextCommands(commands?: Command[]): string {
-        let text = '<br/>';
-
-        const parse = (list: Command[]): void => {
-            list.forEach((command, idx): void => {
-                if (command.type !== commandTypes.SYSTEM) {
-                    text += `${idx + 1}) "${command.listTexts[0]}".`;
-
-                    if (command.description !== undefined) {
-                        text += `<br/> ${command.description}`;
-                    }
-
-                    text += '<br/>';
-                }
-            });
-        };
-
-        if (commands) {
-            parse(commands);
-        } else {
-            text = 'Список доступных команд: <br/>';
-            parse(this._commands);
-        }
-
-        return text;
-    }
-
-    public run(name: string): void {
-        try {
-            const command = this.commands.find((_): boolean => _.id === name);
-            console.log(command);
-            command.func();
-        } catch (e) {
-            console.error('Command: ' + name);
-            console.error(strings.COMMAND_NOT_EXECUTED);
-            console.error(e);
-        }
-    }
-
-    public checkSimilar(msg: string, str: string): number {
-        return stringSimilarity.compareTwoStrings(msg.toLowerCase(), str.toLowerCase())
-    }
-
-    public parseTextToCommand(msg): boolean {
-        try {
-            let resCommand: Command = this._commands.find((_): boolean => {
-                return _.id === this._settings.notFoundCommandId;
-            });
-
-            const isValidMessage = msg.length >= this._settings.minMessageSize;
-
-            const checkSimilar = (command): Command => {
-                const texts = command.listTexts.map((str): void => stringSimilarity.compareTwoStrings(msg, str))
-                const percent = texts.length > 0 ? Math.max.apply(Math, texts) : 0
-
-                command.matchPercent = percent;
-
-                if (percent > resCommand.matchPercent && percent > this._settings.minPercentSimilar) {
-                    resCommand = command;
-                }
-
-                // console.log(`Percent: ${percent}  | Command: "${msg}" / CheckedCommand: "${command.listTexts[0]}"`);
-                return command;
-            };
-
-            const checkMatches = (listPercentMatches, command): Command[] => {
-                const matches: Command[] = [];
-
-                listPercentMatches.forEach((elem): void => {
-                    if (command.matchPercent - elem.matchPercent <= this._settings.matchesCoefficient) {
-                        matches.push(elem);
-                    }
-                });
-
-                return matches;
-            };
-
-            const pushMessage = (msg): boolean => {
-                const listPercentMatches: Command[] = this._commands.map((command): Command => {
-                    return checkSimilar(command);
-                });
-
-                if (resCommand.matchPercent > 0) {
-                    const matches = checkMatches(listPercentMatches, resCommand);
-
-                    if (matches.length > 1) {
-                        coreFunctions.MATCHES_MORE_ONE(matches);
-                        return false;
-                    }
-
-                    if (resCommand.type !== commandTypes.SYSTEM) {
-                        this._pullCommands.push(new Command(resCommand));
-                    }
-                }
-
-                resCommand.func(msg);
-                return true;
-            };
-
-            if (isValidMessage) {
-                return pushMessage(msg);
-            } else {
-                resCommand.func(msg);
-            }
-
-            return false;
-        } catch (e) {
-            console.error('Command not parsed!');
-            console.error(e);
-        }
     }
 
     private parseCommands(commands, coreCommands): void {
@@ -184,6 +63,103 @@ class CommandManager {
             throw e;
         }
     }
+
+    /**
+     * The global methods
+     */
+    public get commands(): Command[] {
+        return this._commands;
+    }
+
+    public parseCommandsToText(commands?: Command[]): string {
+        let text = '<br/>';
+
+        const parse = (list: Command[]): void => {
+            list.forEach((command, idx): void => {
+                if (command.type !== commandTypes.SYSTEM) {
+                    text += `${idx + 1}) "${command.listTexts[0]}".`;
+
+                    if (command.description !== undefined) {
+                        text += `<br/> ${command.description}`;
+                    }
+
+                    text += '<br/>';
+                }
+            });
+        };
+
+        if (commands) {
+            parse(commands);
+        } else {
+            text = 'Список доступных команд: <br/>';
+            parse(this._commands);
+        }
+
+        return text;
+    }
+
+    public run(name: string): void {
+        try {
+            const command = this.commands.find((_): boolean => _.id === name);
+            console.log(command);
+            command.func();
+        } catch (e) {
+            console.error('Command: ' + name);
+            console.error(strings.COMMAND_NOT_EXECUTED);
+            console.error(e);
+        }
+    }
+
+    public selectMatchCommand(msg: string): IPercentMatch {
+        const num = +/\d+/.exec(msg)
+
+        if (num > 0 && num <= this._similarManager.matches.length)
+            return this._similarManager.matches[num - 1]
+
+        return null
+    }
+
+    public parseCommand(msg: string): void {
+        try {
+            const isValidMessage = msg.length >= this._settings.minMessageSize;
+
+            let resCommand: ICommand = this._commands.find((_): boolean => {
+                return _.id === this._settings.notFoundCommandId;
+            });
+
+            if (this._similarManager.isWaitingAnswer)
+                resCommand = this.selectMatchCommand(msg).obj
+            else if (isValidMessage) {
+                resCommand = this.parseTextToCommand(msg)
+
+                if (resCommand.type !== commandTypes.SYSTEM) {
+                    this._pullCommands.push(new Command(resCommand));
+                }
+            }
+
+            if (resCommand instanceof Command)
+                resCommand.func(msg);
+
+            this._similarManager.isWaitingAnswer = false
+        } catch (e) {
+            console.error('Command not parsed!');
+            console.error(e);
+        }
+    }
+
+    public parseTextToCommand(msg: string): ICommand {
+        const FIELD_NAME = 'listTexts'
+        const listPercentMatches: IPercentMatch[] = this._similarManager.similarList(msg, this._commands, FIELD_NAME)
+        const command = listPercentMatches.find(_ => _.isMax).obj
+
+        if (command.matchPercent > 0 && this._similarManager.checkMatches(command.matchPercent, listPercentMatches, FIELD_NAME)) {
+            this._similarManager.printMatches(FIELD_NAME)
+            return null
+        }
+
+        return command
+    }
+
 }
 
 export default CommandManager;
