@@ -180,7 +180,7 @@ class Console {
     const sendMessage = (): void => {
       const message = String(commandInput.val()).replace('\n', '');
 
-      if (message.length > 1) {
+      if (message.length > 1 || !isNaN(Number(message))) {
         this.pushMessage(message);
         this.sendCommand(message);
       } else {

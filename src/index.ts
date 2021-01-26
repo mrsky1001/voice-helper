@@ -16,25 +16,27 @@ export const addBotMessage = (message: string): void => {
 };
 
 export const checkSimilar = (msg: string, str: string): number => {
-    return voiceHelper.commandManager.checkSimilar(msg, str);
+    return voiceHelper.commandManager.similarManager.checkSimilar(msg, str);
 };
 
-export const similarList = (msg: string, list: Array<any>, field: string): Array<IPercentMatch> => {
-    return voiceHelper.commandManager.similarList(msg, list, field);
+export const similarList = (msg: string, list: Array<any>, descriptionField: string): Array<IPercentMatch> => {
+    return voiceHelper.commandManager.similarManager.similarList(msg, list, descriptionField);
 };
 
 export const checkMatches = (matchPercent: number,
                              listPercentMatches: Array<IPercentMatch>,
-                             matchesCoefficient?: number): boolean=> {
-    return voiceHelper.commandManager.checkMatches(matchPercent, listPercentMatches, matchesCoefficient);
+                             descriptionField: string,
+                             matchesCoefficient?: number): boolean => {
+    return voiceHelper.commandManager.similarManager.checkMatches(matchPercent,
+        listPercentMatches, descriptionField, matchesCoefficient);
 };
 
-export const matchesListToText = (matches: Array<IPercentMatch>, field: string): string => {
-    return voiceHelper.commandManager.matchesListToText(matches, field);
+export const matchesListToText = (matches: Array<IPercentMatch>, descriptionField: string): string => {
+    return voiceHelper.commandManager.similarManager.matchesListToText(descriptionField);
 };
 
-export const parseToListText = (list: Array<any>, field: string): string => {
-    return voiceHelper.commandManager.parseToListText(list, field);
+export const parseListToText = (list: Array<any>, descriptionField: string): string => {
+    return voiceHelper.commandManager.similarManager.parseListToText(list, descriptionField);
 };
 
-export default {startVoiceHelper, addBotMessage, checkSimilar, similarList, matchesListToText, parseToListText};
+export default {startVoiceHelper, addBotMessage, checkSimilar, similarList, matchesListToText, parseListToText};

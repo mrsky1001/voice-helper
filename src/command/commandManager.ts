@@ -24,6 +24,10 @@ class CommandManager {
         this.parseCommands(commands, coreCommands);
     }
 
+    get similarManager(): SimilarManager {
+        return this._similarManager
+    }
+
     private parseCommands(commands, coreCommands): void {
         try {
             const isNotExist = (command: Command): boolean => {
@@ -127,9 +131,10 @@ class CommandManager {
                 return _.id === this._settings.notFoundCommandId;
             });
 
-            if (this._similarManager.isWaitingAnswer)
+            if (this._similarManager.isWaitingAnswer) {
                 resCommand = this.selectMatchCommand(msg).obj
-            else if (isValidMessage) {
+                this._similarManager.isWaitingAnswer = false
+            } else if (isValidMessage) {
                 resCommand = this.parseTextToCommand(msg)
 
                 if (resCommand.type !== commandTypes.SYSTEM) {
@@ -140,7 +145,6 @@ class CommandManager {
             if (resCommand instanceof Command)
                 resCommand.func(msg);
 
-            this._similarManager.isWaitingAnswer = false
         } catch (e) {
             console.error('Command not parsed!');
             console.error(e);
@@ -153,7 +157,6 @@ class CommandManager {
         const command = listPercentMatches.find(_ => _.isMax).obj
 
         if (command.matchPercent > 0 && this._similarManager.checkMatches(command.matchPercent, listPercentMatches, FIELD_NAME)) {
-            this._similarManager.printMatches(FIELD_NAME)
             return null
         }
 

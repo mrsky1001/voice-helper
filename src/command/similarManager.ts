@@ -61,16 +61,16 @@ class SimilarManager {
         let maxPercentIndex: number = 0
 
         const checkField = (msg, obj, descriptionField, percentsList): void => {
-            const isArray = Array.isArray(obj[descriptionField])
-            const isString = typeof obj[descriptionField][0] === "string"
+            const isArray = Array.isArray(obj[descriptionField]) && typeof obj[descriptionField][0] === "string"
+            const isString = typeof obj[descriptionField] === "string"
 
-            if (isArray && isString) {
+            if (isArray) {
                 let maxPercentMatch: IPercentMatch = new PercentMatch({})
 
                 obj[descriptionField].forEach(elem => {
                     const percent = this.checkSimilar(msg, elem)
                     if (percent > maxPercentMatch.percent)
-                        maxPercentMatch = new PercentMatch(elem, percent)
+                        maxPercentMatch = new PercentMatch(obj, percent)
                 })
 
                 percentsList.push(maxPercentMatch)
@@ -109,6 +109,7 @@ class SimilarManager {
             }
         });
 
+        this.printMatches(descriptionField)
         this._isWaitingAnswer = this.matches.length > 1
 
         return this.matches.length > 1;
@@ -118,11 +119,11 @@ class SimilarManager {
         let text = ''
 
         this.matches.forEach((match, idx): void => {
-            const isArray = Array.isArray(match.obj[descriptionField])
-            const isString = typeof match.obj[descriptionField][0] === "string"
+            const isArray = Array.isArray(match.obj[descriptionField]) && typeof match.obj[descriptionField][0] === "string"
+            const isString = typeof match.obj[descriptionField] === "string"
             let description = ''
 
-            if (isArray && isString) {
+            if (isArray) {
                 description = match.obj[descriptionField][0]
             } else if (isString) {
                 description = match.obj[descriptionField]
