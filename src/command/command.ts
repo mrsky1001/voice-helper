@@ -10,7 +10,8 @@ interface ICommand {
     type: string;
     matchPercent: number;
     // tslint:disable-next-line
-    func: (msg?: string) => any;
+    func: (msg?: string, obj?: any) => any;
+    userText: string;
 }
 
 class Command implements ICommand {
@@ -19,20 +20,20 @@ class Command implements ICommand {
     private readonly _description: string;
     private readonly _type: string;
     // tslint:disable-next-line
-    private readonly _func: (msg?: string) => any;
+    private readonly _func: (msg?: string, obj?: any) => any;
     private _isExecuted;
     private _userText;
     private _matchPercent;
 
-    constructor({id, listTexts = [], description, type = commandTypes.DEFAULT, func}: ICommand) {
+    constructor({id, listTexts = [], description, type = commandTypes.DEFAULT, func, userText = ''}: ICommand) {
         this._id = id;
         this._listTexts = listTexts;
         this._description = description;
         this._type = type;
         this._func = func;
+        this._userText = userText;
 
         this._matchPercent = 0;
-        this._userText = '';
         this._isExecuted = false;
     }
 
@@ -76,7 +77,7 @@ class Command implements ICommand {
     }
 
     // tslint:disable-next-line
-    public get func(): (msg?: string) => any {
+    public get func(): (msg?: string, obj?: any) => any {
         return this._func;
     }
 

@@ -24,9 +24,14 @@ class CommandManager {
         this.parseCommands(commands, coreCommands);
     }
 
+    private get lastCommand(): Command {
+        return this._pullCommands[this._pullCommands.length - 1]
+    }
+
     get similarManager(): SimilarManager {
         return this._similarManager
     }
+
 
     private parseCommands(commands, coreCommands): void {
         try {
@@ -114,9 +119,7 @@ class CommandManager {
         }
     }
 
-    public selectMatchCommand(msg: string): IPercentMatch {
-        const num = +/\d+/.exec(msg)
-
+    public selectMatchCommand(num: number): IPercentMatch {
         if (num > 0 && num <= this._similarManager.matches.length)
             return this._similarManager.matches[num - 1]
 
@@ -131,20 +134,21 @@ class CommandManager {
                 return _.id === this._settings.notFoundCommandId;
             });
 
-            if (this._similarManager.isWaitingAnswer) {
-                resCommand = this.selectMatchCommand(msg).obj
+            const num = +/\d+/.exec(msg)
+
+            if (this._similarManager.isWaitingAnswer && num > 0) {
+                this.lastCommand.func(this.lastCommand.userText, this.selectMatchCommand(num).obj)
                 this._similarManager.isWaitingAnswer = false
             } else if (isValidMessage) {
                 resCommand = this.parseTextToCommand(msg)
+                resCommand.userText = msg
 
                 if (resCommand.type !== commandTypes.SYSTEM) {
                     this._pullCommands.push(new Command(resCommand));
                 }
-            }
 
-            if (resCommand instanceof Command)
                 resCommand.func(msg);
-
+            }
         } catch (e) {
             console.error('Command not parsed!');
             console.error(e);
@@ -152,11 +156,11 @@ class CommandManager {
     }
 
     public parseTextToCommand(msg: string): ICommand {
-        const FIELD_NAME = 'listTexts'
-        const listPercentMatches: IPercentMatch[] = this._similarManager.similarList(msg, this._commands, FIELD_NAME)
+        const descriptionField = 'listTexts'
+        const listPercentMatches: IPercentMatch[] = this._similarManager.similarList(msg, this._commands, descriptionField)
         const command = listPercentMatches.find(_ => _.isMax).obj
 
-        if (command.matchPercent > 0 && this._similarManager.checkMatches(command.matchPercent, listPercentMatches, FIELD_NAME)) {
+        if (command.matchPercent > 0 && this._similarManager.checkMatches(command.matchPercent, listPercentMatches, descriptionField)) {
             return null
         }
 

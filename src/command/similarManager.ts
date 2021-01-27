@@ -109,8 +109,10 @@ class SimilarManager {
             }
         });
 
-        this.printMatches(descriptionField)
-        this._isWaitingAnswer = this.matches.length > 1
+        if (this.matches.length > 1) {
+            this.printMatches(descriptionField)
+            this._isWaitingAnswer = true
+        }
 
         return this.matches.length > 1;
     }
