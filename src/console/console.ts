@@ -3,64 +3,64 @@
  */
 
 import $ from '../common/import-jquery';
-import { strings } from '../constants/strings';
+import {strings} from '../constants/strings';
 import './console.scss';
 import ConsoleDriver from './consoleDriver';
-import { consoleNames } from './consoleNames';
+import {consoleNames} from './consoleNames';
 
 class Console {
-  /**
-   * The private methods
-   */
-  private get indexMessage(): number {
-    if (this._indexMessage === -1) {
-      this._indexMessage = this._pullMessages.length > 0 ? this._pullMessages.length - 1 : 0;
+    /**
+     * The private methods
+     */
+    private get indexMessage(): number {
+        if (this._indexMessage === -1) {
+            this._indexMessage = this._pullMessages.length > 0 ? this._pullMessages.length - 1 : 0;
+        }
+        return this._indexMessage;
     }
-    return this._indexMessage;
-  }
 
-  private set indexMessage(val) {
-    this._indexMessage = val;
-  }
-
-  private get prevMessage(): string {
-    const commandInput = $('#' + consoleNames.COMMAND_INPUT);
-
-    if (this._pullMessages.length > 0) {
-      if (this.indexMessage > 0 && String(commandInput.val()).length) {
-        this.indexMessage--;
-      }
-      return this._pullMessages[this.indexMessage];
-    } else {
-      return '';
+    private set indexMessage(val) {
+        this._indexMessage = val;
     }
-  }
 
-  private get nextMessage(): string {
-    if (this._pullMessages.length > 0) {
-      if (this.indexMessage < this._pullMessages.length - 1) {
-        this.indexMessage++;
-        return this._pullMessages[this.indexMessage];
-      } else {
-        return '';
-      }
-    } else {
-      return '';
+    private get prevMessage(): string {
+        const commandInput = $('#' + consoleNames.COMMAND_INPUT);
+
+        if (this._pullMessages.length > 0) {
+            if (this.indexMessage > 0 && String(commandInput.val()).length) {
+                this.indexMessage--;
+            }
+            return this._pullMessages[this.indexMessage];
+        } else {
+            return '';
+        }
     }
-  }
 
-  private get messageContainer(): JQuery {
-    return $('#' + consoleNames.MESSAGE_CONTAINER_ID);
-  }
+    private get nextMessage(): string {
+        if (this._pullMessages.length > 0) {
+            if (this.indexMessage < this._pullMessages.length - 1) {
+                this.indexMessage++;
+                return this._pullMessages[this.indexMessage];
+            } else {
+                return '';
+            }
+        } else {
+            return '';
+        }
+    }
 
-  private readonly _consoleElemDom;
-  private readonly _parent: ConsoleDriver;
-  private readonly _MAX_SCROLL = 999999;
-  private readonly _pullMessages: string[];
-  private _indexMessage: number;
+    private get messageContainer(): JQuery {
+        return $('#' + consoleNames.MESSAGE_CONTAINER_ID);
+    }
 
-  constructor(parent: ConsoleDriver) {
-    this._consoleElemDom = $(`
+    private readonly _consoleElemDom;
+    private readonly _parent: ConsoleDriver;
+    private readonly _MAX_SCROLL = 999999;
+    private readonly _pullMessages: string[];
+    private _indexMessage: number;
+
+    constructor(parent: ConsoleDriver) {
+        this._consoleElemDom = $(`
                 <div id="${consoleNames.CONSOLE_ID}">
                     <div id="title-container">
                         <span id="title-text">${strings.CONSOLE_TITLE}</span>
@@ -77,130 +77,130 @@ class Console {
                 </div>
         `);
 
-    this._parent = parent;
-    this._pullMessages = parent.storageManager.listMessages;
-    this._indexMessage = -1;
-  }
-
-  /**
-   * The global methods
-   */
-  public show(): void {
-    const console = $('#' + consoleNames.CONSOLE_ID);
-    const showButton = $('#' + consoleNames.SHOW_CONSOLE_BUTTON);
-
-    console.removeClass('hide-console');
-    showButton.addClass('hide-console');
-  }
-
-  public close(): void {
-    const console = $('#' + consoleNames.CONSOLE_ID);
-    const showButton = $('#' + consoleNames.SHOW_CONSOLE_BUTTON);
-
-    console.addClass('hide-console');
-    showButton.removeClass('hide-console');
-  }
-
-  public increaseSize(): void {
-    const console = $('#' + consoleNames.CONSOLE_ID);
-    const containerMessage = $('#' + consoleNames.MESSAGE_CONTAINER_ID);
-
-    if (!console.hasClass('middle-console') && !console.hasClass('large-console')) {
-      console.addClass('middle-console');
-      containerMessage.addClass('middle-console');
-    } else if (console.hasClass('middle-console')) {
-      console.removeClass('middle-console');
-      containerMessage.removeClass('middle-console');
-      console.addClass('large-console');
+        this._parent = parent;
+        this._pullMessages = parent.storageManager.listMessages;
+        this._indexMessage = -1;
     }
-  }
 
-  public decreaseSize(): void {
-    const console = $('#' + consoleNames.CONSOLE_ID);
-    const containerMessage = $('#' + consoleNames.MESSAGE_CONTAINER_ID);
+    /**
+     * The global methods
+     */
+    public show(): void {
+        const console = $('#' + consoleNames.CONSOLE_ID);
+        const showButton = $('#' + consoleNames.SHOW_CONSOLE_BUTTON);
 
-    if (console.hasClass('large-console')) {
-      console.removeClass('large-console');
-      console.addClass('middle-console');
-      containerMessage.addClass('middle-console');
-    } else if (console.hasClass('middle-console')) {
-      console.removeClass('middle-console');
-      containerMessage.removeClass('middle-console');
+        console.removeClass('hide-console');
+        showButton.addClass('hide-console');
     }
-  }
 
-  public clearSendForm(): void {
-    const commandInput = $('#' + consoleNames.COMMAND_INPUT);
+    public close(): void {
+        const console = $('#' + consoleNames.CONSOLE_ID);
+        const showButton = $('#' + consoleNames.SHOW_CONSOLE_BUTTON);
 
-    commandInput.val('');
-  }
+        console.addClass('hide-console');
+        showButton.removeClass('hide-console');
+    }
 
-  public updateScroll(): void {
-    this.messageContainer.scrollTop(this._MAX_SCROLL);
-  }
+    public increaseSize(): void {
+        const console = $('#' + consoleNames.CONSOLE_ID);
+        const containerMessage = $('#' + consoleNames.MESSAGE_CONTAINER_ID);
 
-  public addMessage(className:string, message:string = ''): void {
-    if (message.trim().length > 0) {
-      this.messageContainer.append(`<div class="${className}">
+        if (!console.hasClass('middle-console') && !console.hasClass('large-console')) {
+            console.addClass('middle-console');
+            containerMessage.addClass('middle-console');
+        } else if (console.hasClass('middle-console')) {
+            console.removeClass('middle-console');
+            containerMessage.removeClass('middle-console');
+            console.addClass('large-console');
+        }
+    }
+
+    public decreaseSize(): void {
+        const console = $('#' + consoleNames.CONSOLE_ID);
+        const containerMessage = $('#' + consoleNames.MESSAGE_CONTAINER_ID);
+
+        if (console.hasClass('large-console')) {
+            console.removeClass('large-console');
+            console.addClass('middle-console');
+            containerMessage.addClass('middle-console');
+        } else if (console.hasClass('middle-console')) {
+            console.removeClass('middle-console');
+            containerMessage.removeClass('middle-console');
+        }
+    }
+
+    public clearSendForm(): void {
+        const commandInput = $('#' + consoleNames.COMMAND_INPUT);
+
+        commandInput.val('');
+    }
+
+    public updateScroll(): void {
+        this.messageContainer.scrollTop(this._MAX_SCROLL);
+    }
+
+    public addMessage(className: string, message: string = ''): void {
+        if (message.length > 0 && message.trim().length > 0) {
+            this.messageContainer.append(`<div class="${className}">
                     <div class="message">${message}</div>
                   </div>`);
+        }
     }
-  }
 
-  public create(): void {
-    this.appendConsole();
-    this.appendEventHandlers();
-  }
-
-  private pushMessage(text: string): void {
-    this._pullMessages.push(text);
-    this._parent.storageManager.listMessages = this._pullMessages;
-    this.indexMessage = this._pullMessages.length - 1;
-  }
-
-  private appendConsole(): void {
-    const body = $('body');
-
-    if (!body.is('#' + consoleNames.CONSOLE_ID)) {
-      body.append(this._consoleElemDom);
+    public create(): void {
+        this.appendConsole();
+        this.appendEventHandlers();
     }
-  }
 
-  private sendCommand(value): void {
-    this.clearSendForm();
-    return this._parent.commandCallback(value);
-  }
+    private pushMessage(text: string): void {
+        this._pullMessages.push(text);
+        this._parent.storageManager.listMessages = this._pullMessages;
+        this.indexMessage = this._pullMessages.length - 1;
+    }
 
-  private appendEventHandlers(): void {
-    const commandInput = $('#' + consoleNames.COMMAND_INPUT);
-    const sendButton = $('#' + consoleNames.SEND_COMMAND);
-    const closeButton = $('#' + consoleNames.TITLE_CLOSE_BUTTON);
-    const showButton = $('#' + consoleNames.SHOW_CONSOLE_BUTTON);
+    private appendConsole(): void {
+        const body = $('body');
 
-    const sendMessage = (): void => {
-      const message = String(commandInput.val()).replace('\n', '');
+        if (!body.is('#' + consoleNames.CONSOLE_ID)) {
+            body.append(this._consoleElemDom);
+        }
+    }
 
-      if (message.length > 1 || !isNaN(Number(message))) {
-        this.pushMessage(message);
-        this.sendCommand(message);
-      } else {
-        commandInput.val('');
-      }
-    };
+    private sendCommand(value): void {
+        this.clearSendForm();
+        return this._parent.commandCallback(value);
+    }
 
-    closeButton.on('click', this.close);
-    showButton.on('click', this.show);
-    sendButton.on('click', sendMessage);
-    commandInput.on('keyup', (e): void => {
-      if (e.key === 'Enter') {
-        sendMessage();
-      } else if (e.key === 'ArrowUp') {
-        commandInput.val(this.prevMessage);
-      } else if (e.key === 'ArrowDown') {
-        commandInput.val(this.nextMessage);
-      }
-    });
-  }
+    private appendEventHandlers(): void {
+        const commandInput = $('#' + consoleNames.COMMAND_INPUT);
+        const sendButton = $('#' + consoleNames.SEND_COMMAND);
+        const closeButton = $('#' + consoleNames.TITLE_CLOSE_BUTTON);
+        const showButton = $('#' + consoleNames.SHOW_CONSOLE_BUTTON);
+
+        const sendMessage = (): void => {
+            const message = String(commandInput.val()).replace('\n', '');
+
+            if (message.length > 1 || !isNaN(Number(message)) && message.trim().length > 0) {
+                this.pushMessage(message);
+                this.sendCommand(message);
+            } else {
+                commandInput.val('');
+            }
+        };
+
+        closeButton.on('click', this.close);
+        showButton.on('click', this.show);
+        sendButton.on('click', sendMessage);
+        commandInput.on('keyup', (e): void => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            } else if (e.key === 'ArrowUp') {
+                commandInput.val(this.prevMessage);
+            } else if (e.key === 'ArrowDown') {
+                commandInput.val(this.nextMessage);
+            }
+        });
+    }
 }
 
 export default Console;

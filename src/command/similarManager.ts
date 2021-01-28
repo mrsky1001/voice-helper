@@ -15,13 +15,13 @@ class SimilarManager {
     private readonly _settings: Settings;
     private readonly _commandManager: CommandManager;
     private _matches: IPercentMatch[];
-    private _isWaitingAnswer: boolean
+    private _matchFieldName: string;
 
     constructor(commandManager, settings) {
         this._settings = settings;
         this._commandManager = commandManager;
         this._matches = [];
-        this._isWaitingAnswer = false
+        this._matchFieldName = '';
     }
 
     /**
@@ -35,17 +35,16 @@ class SimilarManager {
         this._matches = val
     }
 
-    get isWaitingAnswer(): boolean {
-        return this._isWaitingAnswer;
+    get matchFieldName(): string {
+        return this._matchFieldName;
     }
 
-    set isWaitingAnswer(val) {
-        this._isWaitingAnswer = val;
+    set matchFieldName(val) {
+        this._matchFieldName = val
     }
 
-
-    public printMatches(descriptionField: string) {
-        const text = `${coreMessages.MATCHES_MORE_ONE} <br/> ${this.matchesListToText(descriptionField)}`
+    public printMatches() {
+        const text = `${coreMessages.MATCHES_MORE_ONE} <br/> ${this.matchesListToText(this._matchFieldName)}`
 
         addBotMessage(text);
     }
@@ -56,18 +55,18 @@ class SimilarManager {
     }
 
 
-    public similarList(msg: string, list: Array<any>, descriptionField: string): Array<IPercentMatch> {
+    public similarList(msg: string, list: Array<any>, fieldName: string): Array<IPercentMatch> {
         const percentsList: Array<IPercentMatch> = []
         let maxPercentIndex: number = 0
 
-        const checkField = (msg, obj, descriptionField, percentsList): void => {
-            const isArray = Array.isArray(obj[descriptionField]) && typeof obj[descriptionField][0] === "string"
-            const isString = typeof obj[descriptionField] === "string"
+        const checkField = (msg, obj, fieldName, percentsList): void => {
+            const isArray = Array.isArray(obj[fieldName]) && typeof obj[fieldName][0] === "string"
+            const isString = typeof obj[fieldName] === "string"
 
             if (isArray) {
                 let maxPercentMatch: IPercentMatch = new PercentMatch({})
 
-                obj[descriptionField].forEach(elem => {
+                obj[fieldName].forEach(elem => {
                     const percent = this.checkSimilar(msg, elem)
                     if (percent > maxPercentMatch.percent)
                         maxPercentMatch = new PercentMatch(obj, percent)
@@ -75,7 +74,7 @@ class SimilarManager {
 
                 percentsList.push(maxPercentMatch)
             } else if (isString) {
-                const percent = this.checkSimilar(msg, obj[descriptionField])
+                const percent = this.checkSimilar(msg, obj[fieldName])
                 percentsList.push(new PercentMatch(obj, percent))
             } else
                 throw new Error(strings.INCORRECT_LIST_SIMILAR)
@@ -85,7 +84,7 @@ class SimilarManager {
 
         list.forEach((obj): void => {
             if (obj.type !== commandTypes.SYSTEM)
-                checkField(msg, obj, descriptionField, percentsList)
+                checkField(msg, obj, fieldName, percentsList)
         })
 
         percentsList.forEach((obj, idx): void => {
@@ -97,10 +96,11 @@ class SimilarManager {
         return percentsList
     }
 
-    public checkMatches(matchPercent: number,
-                        listPercentMatches: Array<IPercentMatch>,
-                        descriptionField: string,
-                        matchesCoefficient: number = this._settings.matchesCoefficient): boolean {
+    public isContainMatches(matchPercent: number,
+                            listPercentMatches: Array<IPercentMatch>,
+                            fieldName: string,
+                            matchesCoefficient: number = this._settings.matchesCoefficient): boolean {
+        this.matchFieldName = fieldName
         this.matches = [];
 
         listPercentMatches.forEach((elem) => {
@@ -109,26 +109,21 @@ class SimilarManager {
             }
         });
 
-        if (this.matches.length > 1) {
-            this.printMatches(descriptionField)
-            this._isWaitingAnswer = true
-        }
-
         return this.matches.length > 1;
     }
 
-    public matchesListToText(descriptionField: string): string {
+    public matchesListToText(fieldName: string): string {
         let text = ''
 
         this.matches.forEach((match, idx): void => {
-            const isArray = Array.isArray(match.obj[descriptionField]) && typeof match.obj[descriptionField][0] === "string"
-            const isString = typeof match.obj[descriptionField] === "string"
+            const isArray = Array.isArray(match.obj[fieldName]) && typeof match.obj[fieldName][0] === "string"
+            const isString = typeof match.obj[fieldName] === "string"
             let description = ''
 
             if (isArray) {
-                description = match.obj[descriptionField][0]
+                description = match.obj[fieldName][0]
             } else if (isString) {
-                description = match.obj[descriptionField]
+                description = match.obj[fieldName]
             } else
                 throw new Error(strings.INCORRECT_LIST_SIMILAR)
 
@@ -139,12 +134,12 @@ class SimilarManager {
         return text
     }
 
-    public parseListToText(list: Array<any>, descriptionField: string): string {
+    public parseListToText(list: Array<any>, fieldName: string): string {
         let text = ''
         let counter = 1
 
         list.forEach((elem): void => {
-            text += `${counter}) ${elem[descriptionField]} <br/>`
+            text += `${counter}) ${elem[fieldName]} <br/>`
             counter++
         })
 

@@ -29,6 +29,9 @@ export const coreFunctions = {
   DECREASE_CONSOLE: (): void => {
     voiceHelper.consoleDriver.decreaseConsole();
   },
+  PRINT_MATCHES: (): void => {
+    voiceHelper.commandManager.similarManager.printMatches();
+  },
   SHOW_CONSOLE: (): void => {
     voiceHelper.consoleDriver.createConsole();
     addBotMessage(coreMessages.CONSOLE_IS_OPEN);

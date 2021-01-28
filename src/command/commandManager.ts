@@ -14,18 +14,34 @@ class CommandManager {
     private readonly _pullCommands: Command[];
     private readonly _settings: Settings;
     private readonly _similarManager: SimilarManager;
+    private _isWaitingForSelect: boolean;
 
     constructor(commands, coreCommands, settings) {
         this._commands = [];
         this._pullCommands = [];
         this._settings = settings;
         this._similarManager = new SimilarManager(this, settings);
+        this._isWaitingForSelect = false
 
         this.parseCommands(commands, coreCommands);
     }
 
+    private get isWaitingForSelect(): boolean {
+        return this._isWaitingForSelect
+    }
+
+    private set isWaitingForSelect(val) {
+        this._isWaitingForSelect = val
+    }
+
     private get lastCommand(): Command {
         return this._pullCommands[this._pullCommands.length - 1]
+    }
+
+    private getCommand(id) {
+        return this.commands.find((_): boolean => {
+            return _.id === id;
+        });
     }
 
     get similarManager(): SimilarManager {
@@ -37,9 +53,7 @@ class CommandManager {
         try {
             const isNotExist = (command: Command): boolean => {
                 return (
-                    this._commands.find((elem): boolean => {
-                        return elem.id === command.id;
-                    }) === undefined
+                    this.getCommand(command.id) === undefined
                 );
             };
 
@@ -109,7 +123,7 @@ class CommandManager {
 
     public run(name: string): void {
         try {
-            const command = this.commands.find((_): boolean => _.id === name);
+            const command = this.getCommand(name);
             console.log(command);
             command.func();
         } catch (e) {
@@ -128,24 +142,24 @@ class CommandManager {
 
     public parseCommand(msg: string): void {
         try {
-            const isValidMessage = msg.length >= this._settings.minMessageSize;
-
-            let resCommand: ICommand = this._commands.find((_): boolean => {
-                return _.id === this._settings.notFoundCommandId;
-            });
-
             const num = +/\d+/.exec(msg)
 
-            if (this._similarManager.isWaitingAnswer && num > 0) {
+            if (this.isWaitingForSelect && num > 0) {
                 this.lastCommand.func(this.lastCommand.userText, this.selectMatchCommand(num).obj)
-                this._similarManager.isWaitingAnswer = false
-            } else if (isValidMessage) {
-                resCommand = this.parseTextToCommand(msg)
-                resCommand.userText = msg
+                this.isWaitingForSelect = false
+            } else {
+                const isValidMessage = msg.length >= this._settings.minMessageSize;
+                const emptyCommand = this.getCommand(this._settings.notFoundCommandId)
+                let resCommand: ICommand = emptyCommand
 
-                if (resCommand.type !== commandTypes.SYSTEM) {
-                    this._pullCommands.push(new Command(resCommand));
-                }
+                if (isValidMessage) {
+                    resCommand = this.parseTextToCommand(msg, emptyCommand)
+                    resCommand.userText = msg
+
+                    if (resCommand.type !== commandTypes.SYSTEM)
+                        this._pullCommands.push(new Command(resCommand));
+                } else
+                    resCommand = emptyCommand
 
                 resCommand.func(msg);
             }
@@ -155,16 +169,17 @@ class CommandManager {
         }
     }
 
-    public parseTextToCommand(msg: string): ICommand {
-        const descriptionField = 'listTexts'
-        const listPercentMatches: IPercentMatch[] = this._similarManager.similarList(msg, this._commands, descriptionField)
+    public parseTextToCommand(msg: string, emptyCommand: ICommand): ICommand {
+        const fieldName = 'listTexts'
+        const listPercentMatches: IPercentMatch[] = this._similarManager.similarList(msg, this._commands, fieldName)
         const command = listPercentMatches.find(_ => _.isMax).obj
 
-        if (command.matchPercent > 0 && this._similarManager.checkMatches(command.matchPercent, listPercentMatches, descriptionField)) {
-            return null
+        if (command.matchPercent > 0 && this._similarManager.isContainMatches(command.matchPercent, listPercentMatches, fieldName)) {
+            this.isWaitingForSelect = true
+            return this.getCommand('printMatches')
         }
 
-        return command
+        return Object.keys(command).length === 0 ? emptyCommand : command
     }
 
 }

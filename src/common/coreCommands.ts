@@ -19,6 +19,12 @@ export const coreCommands = [
     func: coreFunctions.NOT_FOUND_COMMAND,
   },
   {
+    id: 'printMatches',
+    type: commandTypes.SYSTEM,
+    isSystem: true,
+    func: coreFunctions.PRINT_MATCHES,
+  },
+  {
     id: 'commands',
     listTexts: 'Список команд',
     description: 'Показывает список доступных комманд для вызова через консоль или голосом.',

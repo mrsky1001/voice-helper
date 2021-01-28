@@ -19,24 +19,32 @@ export const checkSimilar = (msg: string, str: string): number => {
     return voiceHelper.commandManager.similarManager.checkSimilar(msg, str);
 };
 
-export const similarList = (msg: string, list: Array<any>, descriptionField: string): Array<IPercentMatch> => {
-    return voiceHelper.commandManager.similarManager.similarList(msg, list, descriptionField);
+export const similarList = (msg: string, list: Array<any>, fieldName: string): Array<IPercentMatch> => {
+    return voiceHelper.commandManager.similarManager.similarList(msg, list, fieldName);
 };
 
-export const checkMatches = (matchPercent: number,
-                             listPercentMatches: Array<IPercentMatch>,
-                             descriptionField: string,
-                             matchesCoefficient?: number): boolean => {
-    return voiceHelper.commandManager.similarManager.checkMatches(matchPercent,
-        listPercentMatches, descriptionField, matchesCoefficient);
+export const isContainMatches = (matchPercent: number,
+                                 listPercentMatches: Array<IPercentMatch>,
+                                 fieldName: string,
+                                 matchesCoefficient?: number): boolean => {
+    return voiceHelper.commandManager.similarManager.isContainMatches(matchPercent,
+        listPercentMatches, fieldName, matchesCoefficient);
 };
 
-export const matchesListToText = (matches: Array<IPercentMatch>, descriptionField: string): string => {
-    return voiceHelper.commandManager.similarManager.matchesListToText(descriptionField);
+export const matchesListToText = (matches: Array<IPercentMatch>, fieldName: string): string => {
+    return voiceHelper.commandManager.similarManager.matchesListToText(fieldName);
 };
 
-export const parseListToText = (list: Array<any>, descriptionField: string): string => {
-    return voiceHelper.commandManager.similarManager.parseListToText(list, descriptionField);
+export const parseListToText = (list: Array<any>, fieldName: string): string => {
+    return voiceHelper.commandManager.similarManager.parseListToText(list, fieldName);
 };
 
-export default {startVoiceHelper, addBotMessage, checkSimilar, similarList, matchesListToText, parseListToText};
+export default {
+    startVoiceHelper,
+    addBotMessage,
+    checkSimilar,
+    similarList,
+    matchesListToText,
+    isContainMatches,
+    parseListToText
+};
