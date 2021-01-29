@@ -25,7 +25,7 @@ class Settings implements ISettings {
     settings: ISettings = {
       minMessageSize: 5,
       minPercentSimilar: 0.4,
-      matchesCoefficient: 0.05,
+      matchesCoefficient: 0.1,
       scaleSize: 100,
       width: '20%',
       height: '25%',

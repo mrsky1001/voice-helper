@@ -21,7 +21,7 @@ export const coreFunctions = {
     console.log('Incorrect command!');
   },
   SHOW_COMMANDS: (): void => {
-    addBotMessage(voiceHelper.commandManager.parseCommandsToText());
+    voiceHelper.commandManager.printCommands();
   },
   INCREASE_CONSOLE: (): void => {
     voiceHelper.consoleDriver.increaseConsole();
