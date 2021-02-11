@@ -20,6 +20,9 @@ export const coreFunctions = {
   INCORRECT_COMMAND: (): void => {
     console.log('Incorrect command!');
   },
+  SHOW_COMMAND_GROUPS: (): void => {
+    voiceHelper.commandManager.printCommandGroups();
+  },
   SHOW_COMMANDS: (): void => {
     voiceHelper.commandManager.printCommands();
   },

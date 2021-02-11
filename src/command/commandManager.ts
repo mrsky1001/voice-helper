@@ -11,7 +11,6 @@ import { IPercentMatch } from './percentMatch';
 import SimilarManager from './similarManager';
 
 class CommandManager {
-
   private get isWaitingForSelect(): boolean {
     return this._isWaitingForSelect;
   }
@@ -35,6 +34,7 @@ class CommandManager {
   public get commands(): Command[] {
     return this._commands;
   }
+
   private readonly _commands: Command[];
   private readonly _pullCommands: Command[];
   private readonly _settings: Settings;
@@ -65,7 +65,9 @@ class CommandManager {
           if (command.type !== commandTypes.SYSTEM) {
             text += `${++counter}) "${command.listTexts[0]}".`;
 
-            if (command.description !== undefined) { text += `<br/> ${command.description}`; }
+            if (command.description !== undefined) {
+              text += `<br/> ${command.description}`;
+            }
 
             text += '<br/>';
           }
@@ -75,7 +77,7 @@ class CommandManager {
       if (commands) {
         parse(commands);
       } else {
-        text = 'Список доступных команд: <br/>';
+        text = 'Список всех доступных команд: <br/>';
         parse(this._commands);
       }
 
@@ -84,6 +86,36 @@ class CommandManager {
 
     addBotMessage(parseCommandsToText());
   }
+
+  //
+  // public printCommandGroups(): void {
+  //     const parseCommandsToText = (): string => {
+  //         let text = '<br/>';
+  //
+  //         const parse = (list: Command[]): void => {
+  //             let counter: number = 0;
+  //
+  //             list.forEach((command): void => {
+  //                 if (command.type !== commandTypes.SYSTEM) {
+  //                     text += `${++counter}) "${command.group}".`;
+  //
+  //                     if (command.description !== undefined) {
+  //                         text += `<br/> ${command.description}`;
+  //                     }
+  //
+  //                     text += '<br/>';
+  //                 }
+  //             });
+  //         };
+  //
+  //         text = 'Список команд по группам: <br/>';
+  //         parse(this._commands);
+  //
+  //         return text;
+  //     };
+  //
+  //     addBotMessage(parseCommandsToText());
+  // }
 
   public run(name: string): void {
     try {
@@ -98,16 +130,38 @@ class CommandManager {
   }
 
   public selectMatchCommand(num: number): IPercentMatch {
-    if (num > 0 && num <= this._similarManager.matches.length) { return this._similarManager.matches[num - 1]; }
+    if (num > 0 && num <= this._similarManager.matches.length) {
+      return this._similarManager.matches[num - 1];
+    }
 
     return null;
+  }
+
+  public parseTextToCommand(msg: string): ICommand {
+    const fieldName = 'listTexts';
+    const listPercentMatches: IPercentMatch[] = this._similarManager.similarList(msg, this._commands, fieldName);
+    const command = listPercentMatches.find((_) => _.isMax).obj;
+
+    if (Object.keys(command).length === 0) { return this.emptyCommand; }
+    else {
+      command.matchPercent = listPercentMatches.find((_) => _.isMax).percent;
+
+      if (command.matchPercent > 0 && this._similarManager.isContainMatches(command.matchPercent, listPercentMatches, fieldName)) {
+        this.printMatchesAndWaiting();
+        return null;
+      }
+
+      return command;
+    }
   }
 
   public parseCommand(msg: string): void {
     const setCommand = (command: ICommand, msg: string): void => {
       command.userText = msg;
 
-      if (command.type !== commandTypes.SYSTEM) { this._pullCommands.push(new Command(command)); }
+      if (command.type !== commandTypes.SYSTEM) {
+        this._pullCommands.push(new Command(command));
+      }
     };
 
     const handlerWaitingForSelect = (msg: string, num: number): void => {
@@ -132,9 +186,14 @@ class CommandManager {
       if (isValidMessage) {
         resCommand = this.parseTextToCommand(msg);
 
-        if (resCommand === null) { return null; }
-        else { setCommand(resCommand, msg); }
-      } else { resCommand = this.emptyCommand; }
+        if (resCommand === null) {
+          return null;
+        } else {
+          setCommand(resCommand, msg);
+        }
+      } else {
+        resCommand = this.emptyCommand;
+      }
 
       resCommand.func(msg);
     };
@@ -142,8 +201,11 @@ class CommandManager {
     try {
       const num = +/\d+/.exec(msg);
 
-      if (this.isWaitingForSelect && num > 0) { handlerWaitingForSelect(msg, num); }
-      else { handlerStandardCommand(msg); }
+      if (this.isWaitingForSelect && num > 0) {
+        handlerWaitingForSelect(msg, num);
+      } else {
+        handlerStandardCommand(msg);
+      }
     } catch (e) {
       console.error('Command not parsed!');
       console.error(e);
@@ -153,20 +215,6 @@ class CommandManager {
   public printMatchesAndWaiting() {
     this.isWaitingForSelect = true;
     this.similarManager.printMatches();
-  }
-
-  public parseTextToCommand(msg: string): ICommand {
-    const fieldName = 'listTexts';
-    const listPercentMatches: IPercentMatch[] = this._similarManager.similarList(msg, this._commands, fieldName);
-    const command = listPercentMatches.find((_) => _.isMax).obj;
-    command.matchPercent = listPercentMatches.find((_) => _.isMax).percent;
-
-    if (command.matchPercent > 0 && this._similarManager.isContainMatches(command.matchPercent, listPercentMatches, fieldName)) {
-      this.printMatchesAndWaiting();
-      return null;
-    }
-
-    return Object.keys(command).length === 0 ? this.emptyCommand : command;
   }
 
   private getCommand(id) {
@@ -197,11 +245,11 @@ class CommandManager {
     };
 
     try {
-      coreCommands.forEach((elem): void => {
+      commands.forEach((elem): void => {
         prepareCommand(elem);
       });
 
-      commands.forEach((elem): void => {
+      coreCommands.forEach((elem): void => {
         prepareCommand(elem);
       });
     } catch (e) {
