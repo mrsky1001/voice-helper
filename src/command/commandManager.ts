@@ -142,8 +142,9 @@ class CommandManager {
     const listPercentMatches: IPercentMatch[] = this._similarManager.similarList(msg, this._commands, fieldName);
     const command = listPercentMatches.find((_) => _.isMax).obj;
 
-    if (Object.keys(command).length === 0) { return this.emptyCommand; }
-    else {
+    if (Object.keys(command).length === 0) {
+      return this.emptyCommand;
+    } else {
       command.matchPercent = listPercentMatches.find((_) => _.isMax).percent;
 
       if (command.matchPercent > 0 && this._similarManager.isContainMatches(command.matchPercent, listPercentMatches, fieldName)) {
@@ -166,17 +167,13 @@ class CommandManager {
 
     const handlerWaitingForSelect = (msg: string, num: number): void => {
       const selectedCommand: IPercentMatch = this.selectMatchCommand(num);
+      this.isWaitingForSelect = false;
 
-      if (selectedCommand === null) {
-        this.emptyCommand.func();
-        this.isWaitingForSelect = false;
-      } else if (selectedCommand.obj instanceof Command) {
+      if (selectedCommand === null) { this.emptyCommand.func(); }
+      else if (selectedCommand.obj instanceof Command) {
         setCommand(selectedCommand.obj, msg);
         selectedCommand.obj.func(msg);
-      } else {
-        this.lastCommand.func(this.lastCommand.userText, selectedCommand.obj);
-        this.isWaitingForSelect = false;
-      }
+      } else { this.lastCommand.func(this.lastCommand.userText, selectedCommand.obj); }
     };
 
     const handlerStandardCommand = (msg: string): void => {
